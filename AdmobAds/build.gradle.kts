@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
+    `maven-publish`
+
 }
 
 android {
@@ -49,4 +51,17 @@ dependencies {
     implementation(libs.sdp.android)
     implementation(libs.ssp.android)
     implementation(libs.shimmer)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            afterEvaluate {
+                from(components["release"])
+                // groupId = "com.github.sagar"
+                //artifactId = "neopop-compose"
+               // version = "1.0.0"
+            }
+        }
+    }
 }
