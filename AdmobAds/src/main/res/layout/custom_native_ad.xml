@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ad_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/SdkTheme"
+    android:visibility="visible">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="3dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="15dp">
+
+        <com.google.android.gms.ads.nativead.MediaView
+            android:id="@+id/ad_media"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginTop="4dp"
+            android:background="#000000"
+            app:layout_constraintEnd_toEndOf="@+id/ad_body"
+            app:layout_constraintStart_toStartOf="@+id/cvIconApp"
+            app:layout_constraintTop_toBottomOf="@id/ad_advertiser" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvIconApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:visibility="visible"
+            app:cardCornerRadius="@dimen/_6sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ad_media">
+
+            <ImageView
+                android:id="@+id/ad_app_icon"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:adjustViewBounds="true" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/txtAd"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtAd2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/ad_rectangle"
+            android:gravity="center"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:textSize="@dimen/_8ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/cvIconApp"
+            app:layout_constraintTop_toBottomOf="@+id/ad_media" />
+
+        <TextView
+            android:id="@+id/ad_headline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/app_name"
+            android:textColor="#222222"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txtAd2"
+            app:layout_constraintTop_toBottomOf="@+id/ad_media" />
+
+        <TextView
+            android:id="@+id/ad_advertiser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:lines="1"
+            android:textColor="@android:color/transparent"
+            android:textSize="3sp"
+            app:layout_constraintEnd_toEndOf="@+id/ad_headline"
+            app:layout_constraintStart_toEndOf="@id/txtAd"
+            app:layout_constraintTop_toTopOf="@id/txtAd"
+            tools:text="http://youtu.be/e28hsn78gso" />
+
+        <TextView
+            android:id="@+id/ad_body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:lines="2"
+            android:text="@string/appbar_scrolling_view_behavior"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cvIconApp"
+            app:layout_constraintTop_toBottomOf="@+id/ad_headline" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/ad_call_to_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/round_btn"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ad_body"
+            tools:text="Get Now" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.gms.ads.nativead.NativeAdView>

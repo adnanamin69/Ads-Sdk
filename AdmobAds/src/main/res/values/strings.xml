@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ad mob Sdk</string>
+    <string name="ad_is_loading">Ad is loading</string>
+    <string name="app_id_test" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+</resources>

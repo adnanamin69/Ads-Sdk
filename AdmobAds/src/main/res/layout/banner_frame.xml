@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/adFrameNative"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_5sdp"
+    android:background="@drawable/rectangle_shape_btn"
+    android:backgroundTint="?attr/nativeBg"
+    android:theme="@style/SdkTheme"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+
+        android:id="@+id/shimmer_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:background="?attr/nativeBg" />
+</FrameLayout>
