@@ -19,14 +19,12 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import java.util.concurrent.atomic.AtomicBoolean
 
-class InterstitialAdManager {
+class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifference: Long = 15000L) {
 
     companion object {
         private const val TAG = "InterstitialAdManager"
-        private const val AD_TIMEOUT_MS = 30000L // 30 seconds
         private var clickCount = 0
         var timeLapse = 0L
-        //  private const val CLICKS_BEFORE_SHOW = 3
     }
 
     private var interstitialAd: InterstitialAd? = null
@@ -165,7 +163,7 @@ class InterstitialAdManager {
                 Log.d(TAG, "Interstitial ad was dismissed")
                 isAdReady.set(false)
                 interstitialAd = null
-                timeLapse = System.currentTimeMillis() + 15000
+                timeLapse = System.currentTimeMillis() + timeLapseDifference
                 // Perform dismissed callback
                 onAdDismissedCallback?.invoke(true)
             }
@@ -230,7 +228,7 @@ class InterstitialAdManager {
     private fun setupTimeout() {
         timeoutHandler = Handler(Looper.getMainLooper())
         timeoutRunnable = Runnable {
-            Log.w(TAG, "Ad loading timeout after $AD_TIMEOUT_MS ms")
+            Log.w(TAG, "Ad loading timeout after $adTimeout ms")
             isLoading.set(false)
             hideLoadingDialog()
 
@@ -238,7 +236,7 @@ class InterstitialAdManager {
 
         }
 
-        timeoutHandler?.postDelayed(timeoutRunnable!!, AD_TIMEOUT_MS)
+        timeoutHandler?.postDelayed(timeoutRunnable!!, adTimeout)
     }
 
     private fun cancelTimeout() {
