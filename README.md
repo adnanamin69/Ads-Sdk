@@ -1,6 +1,6 @@
 # AdsSdk
 
-[![Release](https://jitpack.io/v/adnanamin69/AdsSdk.svg)](https://jitpack.io/#adnanamin69/AdsSdk)
+[![Release](https://jitpack.io/v/adnanamin69/AdsSdk.svg)](https://jitpack.io/#adnanamin69/Ads-Sdk)
 
 A modular Android SDK for easy integration of AdMob ads (App Open, Interstitial, Banner, and Native) in your Android applications. Published on JitPack for simple dependency management.
 
