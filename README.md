@@ -129,13 +129,13 @@ class MyApp : Application() {
 ```kotlin
 val adManager = InterstitialAdManager()
 adManager.loadAndShowAd(
-    context,           // Activity or application context
-    "<ad_unit_id>",   // Your AdMob Interstitial Ad unit ID
-    clickIntervals = 1, // (Optional) Show ad every Nth click (default: 1)
-    showLoading = true, // (Optional) Show loading dialog while ad loads (default: true)
-    enableTimeLapse = true, // (Optional) Prevents showing ads too frequently (default: true)
+  context,           // Activity or application context
+  "<ad_unit_id>",   // Your AdMob Interstitial Ad unit ID
+  clickIntervals = 1, // (Optional) Show ad every Nth click (default: 1)
+  showLoading = true, // (Optional) Show loading dialog while ad loads (default: true)
+  enableTimeLapse = true, // (Optional) Prevents showing ads too frequently (default: true)
 ) { wasShown ->
-    // Callback after ad is dismissed or not shown
+  // Callback after ad is dismissed or not shown
 }
 ```
 
