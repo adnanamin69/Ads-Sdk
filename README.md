@@ -126,20 +126,36 @@ class MyApp : Application() {
 
 ### 3. Show Interstitial Ad
 
+#### Basic Usage
 ```kotlin
 val adManager = InterstitialAdManager()
 adManager.loadAndShowAd(
-  context,           // Activity or application context
-  "<ad_unit_id>",   // Your AdMob Interstitial Ad unit ID
-  clickIntervals = 1, // (Optional) Show ad every Nth click (default: 1)
-  showLoading = true, // (Optional) Show loading dialog while ad loads (default: true)
-  enableTimeLapse = true, // (Optional) Prevents showing ads too frequently (default: true)
+    context,           // Activity or application context
+    "<ad_unit_id>",   // Your AdMob Interstitial Ad unit ID
+    clickIntervals = 1, // (Optional) Show ad every Nth click (default: 1)
+    showLoading = true, // (Optional) Show loading dialog while ad loads (default: true)
+    enableTimeLapse = true, // (Optional) Prevents showing ads too frequently (default: true)
 ) { wasShown ->
-  // Callback after ad is dismissed or not shown
+    // Callback after ad is dismissed or not shown
 }
 ```
 
-**Arguments:**
+#### Custom Timeout and Time Lapse
+You can now customize the ad loading timeout and the minimum time between ad displays by passing arguments to the `InterstitialAdManager` constructor:
+
+```kotlin
+val adManager = InterstitialAdManager(
+    adTimeout = 30000L,         // Timeout for loading an ad in milliseconds (default: 30000L = 30s)
+    timeLapseDifference = 15000L // Minimum time in milliseconds between showing ads (default: 15000L = 15s)
+)
+```
+
+- `adTimeout`: How long to wait for an ad to load before timing out (in milliseconds).
+- `timeLapseDifference`: The minimum time (in milliseconds) that must pass before another ad can be shown.
+
+You can then use `adManager.loadAndShowAd(...)` as shown above.
+
+**Arguments for loadAndShowAd:**
 
 - `context`: The activity or application context.
 - `<ad_unit_id>`: Your AdMob Interstitial Ad unit ID (string).
