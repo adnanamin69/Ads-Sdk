@@ -1,6 +1,6 @@
 # AdsSdk
 
-[![Release](https://jitpack.io/v/YourGitHubUsername/AdsSdk.svg)](https://jitpack.io/#YourGitHubUsername/AdsSdk)
+[![Release](https://jitpack.io/v/adnanamin69/AdsSdk.svg)](https://jitpack.io/#adnanamin69/AdsSdk)
 
 A modular Android SDK for easy integration of AdMob ads (App Open, Interstitial, Banner, and Native) in your Android applications. Published on JitPack for simple dependency management.
 
@@ -38,10 +38,10 @@ In your app or module `build.gradle` or `build.gradle.kts`:
 
 ```
 dependencies {
-    implementation("com.github.YourGitHubUsername:AdsSdk:<latest-version>")
+    implementation("com.github.adnanamin69:AdsSdk:1.0.0") // Use the latest release version from JitPack
 }
 ```
-Replace `YourGitHubUsername` with your GitHub username and `<latest-version>` with the latest release/tag from JitPack.
+Replace `1.0.0` with the latest version from the [JitPack Releases](https://jitpack.io/#adnanamin69/AdsSdk).
 
 ---
 
@@ -151,13 +151,13 @@ Contributions, issues, and feature requests are welcome! Feel free to open an is
 
 ## License
 
-This project is [MIT](LICENSE) licensed.
+This project is licensed under the [MIT License](LICENSE) and is free for public and commercial use.
 
 ---
 
 ## Author
 
-Maintained by [Your Name](https://github.com/YourGitHubUsername).
+Maintained by [Adnan Amin](https://github.com/adnanamin69).
 
 ---
 
