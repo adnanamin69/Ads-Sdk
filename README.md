@@ -1,8 +1,9 @@
 # AdsSdk
 
-[![Release](https://jitpack.io/v/adnanamin69/AdsSdk.svg)](https://jitpack.io/#adnanamin69/Ads-Sdk)
+[![Release](https://jitpack.io/v/adnanamin69/Ads-Sdk.svg)](https://jitpack.io/#adnanamin69/Ads-Sdk)
 
-A modular Android SDK for easy integration of AdMob ads (App Open, Interstitial, Banner, and Native) in your Android applications. Published on JitPack for simple dependency management.
+A modular Android SDK for easy integration of AdMob ads (App Open, Interstitial, Banner, and Native)
+in your Android applications. Published on JitPack for simple dependency management.
 
 ---
 
@@ -20,6 +21,7 @@ A modular Android SDK for easy integration of AdMob ads (App Open, Interstitial,
 ## Installation
 
 ### 1. Add JitPack repository
+
 In your root `settings.gradle` or `settings.gradle.kts`:
 
 ```kotlin
@@ -34,6 +36,7 @@ dependencyResolutionManagement {
 ```
 
 ### 2. Add the dependency
+
 In your app or module `build.gradle` or `build.gradle.kts`:
 
 ```
@@ -41,13 +44,16 @@ dependencies {
     implementation("com.github.adnanamin69:AdsSdk:1.0.0") // Use the latest release version from JitPack
 }
 ```
-Replace `1.0.0` with the latest version from the [JitPack Releases](https://jitpack.io/#adnanamin69/AdsSdk).
+
+Replace `1.0.0` with the latest version from
+the [JitPack Releases](https://jitpack.io/#adnanamin69/AdsSdk).
 
 ---
 
 ## Usage
 
 ### 1. Initialize Consent Manager
+
 ```kotlin
 val consentManager = GoogleMobileAdsConsentManager(context)
 consentManager.gatherConsent(activity) { error ->
@@ -57,26 +63,33 @@ consentManager.gatherConsent(activity) { error ->
     }
 }
 ```
+
 **Arguments:**
+
 - `context`: The application or activity context.
 - `activity`: The current activity instance (required for showing consent dialogs).
-- `error`: Callback parameter, returns any error encountered during consent gathering (null if successful).
+- `error`: Callback parameter, returns any error encountered during consent gathering (null if
+  successful).
 
 ---
 
 ### 2. Show App Open Ad
+
 ```kotlin
 initAppOpenAd("<ad_unit_id>") {
     // Callback after ad is shown
 }
 ```
+
 **Arguments:**
+
 - `<ad_unit_id>`: Your AdMob App Open Ad unit ID (string).
 - Callback: Lambda function executed after the ad is shown or dismissed.
 
 ---
 
 ### 3. Show Interstitial Ad
+
 ```kotlin
 val adManager = InterstitialAdManager()
 adManager.loadAndShowAd(
@@ -89,7 +102,9 @@ adManager.loadAndShowAd(
     // Callback after ad is dismissed or not shown
 }
 ```
+
 **Arguments:**
+
 - `context`: The activity or application context.
 - `<ad_unit_id>`: Your AdMob Interstitial Ad unit ID (string).
 - `clickIntervals`: (Optional) Integer, show ad every Nth click (default: 1).
@@ -100,34 +115,42 @@ adManager.loadAndShowAd(
 ---
 
 ### 4. Load Banner Ad
+
 ```kotlin
 activity.loadBanner(
     "<ad_unit_id>", // Your AdMob Banner Ad unit ID
     frameLayout     // The FrameLayout where the banner will be displayed
 )
 ```
+
 **Arguments:**
+
 - `<ad_unit_id>`: Your AdMob Banner Ad unit ID (string).
 - `frameLayout`: The FrameLayout view in your layout where the banner ad will be loaded.
 
 ---
 
 ### 5. Load Native Ad
+
 ```kotlin
 context.nativeAdMainSmall(
     frameAd,        // The FrameLayout where the native ad will be displayed
     "<ad_unit_id>" // Your AdMob Native Ad unit ID
 )
 ```
+
 **Arguments:**
+
 - `frameAd`: The FrameLayout view in your layout where the native ad will be loaded.
 - `<ad_unit_id>`: Your AdMob Native Ad unit ID (string).
 
-See the [sample app](app/src/main/java/com/adnan/live/adssdk/MainActivity.kt) for a complete integration example.
+See the [sample app](app/src/main/java/com/adnan/live/adssdk/MainActivity.kt) for a complete
+integration example.
 
 ---
 
 ## Dependencies
+
 - Google Mobile Ads SDK
 - Google UMP SDK (User Messaging Platform)
 - AndroidX libraries
@@ -137,7 +160,9 @@ See the [sample app](app/src/main/java/com/adnan/live/adssdk/MainActivity.kt) fo
 ---
 
 ## ProGuard
+
 Consumer and ProGuard rules are provided in the library. If you use ProGuard, make sure to include:
+
 - `AdmobAds/proguard-rules.pro`
 - `AdmobAds/consumer-rules.pro`
 
@@ -145,7 +170,8 @@ Consumer and ProGuard rules are provided in the library. If you use ProGuard, ma
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to open an issue or submit a pull request.
+Contributions, issues, and feature requests are welcome! Feel free to open an issue or submit a pull
+request.
 
 ---
 
