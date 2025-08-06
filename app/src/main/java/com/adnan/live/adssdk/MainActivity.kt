@@ -1,6 +1,5 @@
 package com.adnan.live.adssdk
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,9 +19,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -30,21 +33,19 @@ import androidx.lifecycle.lifecycleScope
 import com.adnan.live.adssdk.ui.theme.AdsSdkTheme
 import com.chromecast.live.admobads.ads.GoogleMobileAdsConsentManager
 import com.chromecast.live.admobads.ads.InterstitialAdManager
-import com.chromecast.live.admobads.ads.banner
 import com.chromecast.live.admobads.ads.initAppOpenAd
 import com.chromecast.live.admobads.ads.loadBanner
 import com.chromecast.live.admobads.ads.nativeAdMainSmall
 import com.chromecast.live.admobads.ads.nativeAdMedium
 import com.chromecast.live.admobads.databinding.BannerFrameBinding
-import com.chromecast.live.admobads.databinding.NativeBannerBinding
 import com.chromecast.live.admobads.databinding.NativeFrameBigBinding
 import com.chromecast.live.admobads.databinding.NativeFrameSmallBinding
 import com.google.android.gms.ads.MobileAds
 import com.sebaslogen.resaca.rememberScoped
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.annotation.Native
 
 class MainActivity : ComponentActivity() {
 
@@ -228,16 +229,23 @@ class MainActivity : ComponentActivity() {
                             Text("Show Interstitial on every 5 clicks timelapse off")
                         }
 
+                        var showAds by remember {
+                            mutableStateOf(false)
+                        }
+                        LaunchedEffect(Unit) {
+                            delay(5000)
+                            showAds = true
+                        }
+                        if (showAds) {
+                            BannerAd(
+                                modifier = Modifier.fillMaxWidth(),
+                                adUnit = "ca-app-pub-3940256099942544/6300978111"
+                            )
 
-                        BannerAd(
-                            modifier = Modifier.fillMaxWidth(),
-                            adUnit = "ca-app-pub-3940256099942544/6300978111"
-                        )
 
-
-                        NativeMedium(Modifier.fillMaxWidth())
-                        NativeSmall(modifier = Modifier.fillMaxWidth())
-
+                            NativeMedium(Modifier.fillMaxWidth())
+                            NativeSmall(modifier = Modifier.fillMaxWidth())
+                        }
                     }
                 }
             }
@@ -253,7 +261,7 @@ fun NativeMedium(modifier: Modifier = Modifier) {
         val view = LayoutInflater.from(context)
             .inflate(com.chromecast.live.admobads.R.layout.native_frame_big, null, false)
             .let { view -> NativeFrameBigBinding.bind(view) }
-        context?.nativeAdMedium(view.adFrameNative, "ca-app-pub-3940256099942544/1044960115")
+        context?.nativeAdMedium(view.adFrameNative, "ca-app-pub-3940256099942544/2247696110")
 
         view
 
@@ -275,7 +283,7 @@ fun NativeSmall(modifier: Modifier = Modifier) {
         val view = LayoutInflater.from(context)
             .inflate(com.chromecast.live.admobads.R.layout.native_frame_small, null, false)
             .let { view -> NativeFrameSmallBinding.bind(view) }
-        context?.nativeAdMainSmall(view.adFrameNative, "ca-app-pub-3940256099942544/1044960115")
+        context?.nativeAdMainSmall(view.adFrameNative, "ca-app-pub-3940256099942544/2247696110")
 
         view
 

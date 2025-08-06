@@ -50,6 +50,22 @@ the [JitPack Releases](https://jitpack.io/#adnanamin69/AdsSdk).
 
 ---
 
+## ⚠️ Mandatory Theme Configuration
+
+You **must** add the following items to your app-level theme (typically in `app/src/main/res/values/themes.xml`):
+
+```xml
+<style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+  <item name="colorPrimary">#F44336</item>
+  <item name="backgroundColor">#7E8539</item>
+  <item name="nativeBg">#903B3B</item>
+</style>
+```
+
+If you use a different theme name, add these `<item>` elements to your main app theme.
+
+---
+
 ## Usage
 
 ### 1. Initialize Consent Manager
@@ -73,7 +89,7 @@ consentManager.gatherConsent(activity) { error ->
 
 ---
 
-### 2. Show App Open Ad
+### 2. Show App Open Ad (Immediate)
 
 ```kotlin
 initAppOpenAd("<ad_unit_id>") {
@@ -81,10 +97,30 @@ initAppOpenAd("<ad_unit_id>") {
 }
 ```
 
+**Note:**
+- This function is used to **load and show an App Open ad immediately** (e.g., in a splash screen or at any specific point in your app). It does **not** automatically handle showing ads on app resume.
+- Use this if you want to control exactly when the App Open ad appears.
+
 **Arguments:**
 
 - `<ad_unit_id>`: Your AdMob App Open Ad unit ID (string).
 - Callback: Lambda function executed after the ad is shown or dismissed.
+
+#### For Automatic App Open Ads on Resume
+To automatically show App Open ads when your app resumes (recommended for best user experience), use the `AppOpenAdManager` as shown below (see `MyApp.kt`):
+
+```kotlin
+class MyApp : Application() {
+    val appOpenManger: AppOpenAdManager by lazy {
+        AppOpenAdManager(this, "<ad_unit_id>")
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        appOpenManger.forceLoadAd()
+    }
+}
+```
 
 ---
 

@@ -11,9 +11,5 @@
         <item name="android:backgroundDimAmount">0.5</item>
     </style>
 
-    <style name="SdkTheme" parent="">
-        <item name="nativeBg">#8E8989</item>
-    </style>
-
 
 </resources>

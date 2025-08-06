@@ -27,7 +27,8 @@ import kotlin.apply
 import kotlin.collections.any
 import kotlin.let
 
-class AppOpenAdManager(val context: Application) : Application.ActivityLifecycleCallbacks,
+class AppOpenAdManager(val context: Application, adUnit: String) :
+    Application.ActivityLifecycleCallbacks,
     LifecycleObserver {
 
     companion object {
@@ -50,8 +51,8 @@ class AppOpenAdManager(val context: Application) : Application.ActivityLifecycle
     private var loadingRunnable: Runnable? = null
 
     init {
+        appOpen = adUnit
         context.registerActivityLifecycleCallbacks(this)
-
     }
 
     /** Check if ad was loaded more than n hours ago. */
