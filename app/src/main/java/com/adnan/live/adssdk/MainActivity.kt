@@ -31,8 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
 import com.adnan.live.adssdk.ui.theme.AdsSdkTheme
+import com.chromecast.live.admobads.ads.BannerAd
 import com.chromecast.live.admobads.ads.GoogleMobileAdsConsentManager
 import com.chromecast.live.admobads.ads.InterstitialAdManager
+import com.chromecast.live.admobads.ads.NativeMedium
+import com.chromecast.live.admobads.ads.NativeSmall
 import com.chromecast.live.admobads.ads.initAppOpenAd
 import com.chromecast.live.admobads.ads.loadBanner
 import com.chromecast.live.admobads.ads.nativeAdMainSmall
@@ -243,84 +246,20 @@ class MainActivity : ComponentActivity() {
                             )
 
 
-                            NativeMedium(Modifier.fillMaxWidth())
-                            NativeSmall(modifier = Modifier.fillMaxWidth())
+                            NativeMedium(
+                                Modifier.fillMaxWidth(),
+                                "ca-app-pub-3940256099942544/2247696110"
+                            )
+                            NativeSmall(
+                                modifier = Modifier.fillMaxWidth(),
+                                "ca-app-pub-3940256099942544/2247696110"
+                            )
                         }
                     }
                 }
             }
         }
     }
-}
-
-
-@Composable
-fun NativeMedium(modifier: Modifier = Modifier) {
-    val context = LocalActivity.current
-    val binding = rememberScoped("ad") {
-        val view = LayoutInflater.from(context)
-            .inflate(com.chromecast.live.admobads.R.layout.native_frame_big, null, false)
-            .let { view -> NativeFrameBigBinding.bind(view) }
-        context?.nativeAdMedium(view.adFrameNative, "ca-app-pub-3940256099942544/2247696110")
-
-        view
-
-    }
-
-    AndroidView(
-        modifier = modifier,
-        factory = {
-            binding.root
-        }// Only uses the remembered binding
-    )
-}
-
-
-@Composable
-fun NativeSmall(modifier: Modifier = Modifier) {
-    val context = LocalActivity.current
-    val binding = rememberScoped("ad") {
-        val view = LayoutInflater.from(context)
-            .inflate(com.chromecast.live.admobads.R.layout.native_frame_small, null, false)
-            .let { view -> NativeFrameSmallBinding.bind(view) }
-        context?.nativeAdMainSmall(view.adFrameNative, "ca-app-pub-3940256099942544/2247696110")
-
-        view
-
-    }
-
-    AndroidView(
-        modifier = modifier,
-        factory = {
-            binding.root
-        }// Only uses the remembered binding
-    )
-}
-
-@Composable
-fun BannerAd(modifier: Modifier = Modifier, adUnit: String) {
-    val context = LocalActivity.current
-
-    val binding = rememberScoped {
-        val view = LayoutInflater.from(context)
-            .inflate(com.chromecast.live.admobads.R.layout.banner_frame, null, false)
-            .let { view -> BannerFrameBinding.bind(view) }
-
-        view
-
-    }
-
-
-    AndroidView(
-        modifier = modifier
-            .fillMaxWidth(),
-        factory = {
-            binding.root
-        },
-        update = {
-            context?.loadBanner(adUnit, it)
-        } // Only uses the remembered binding
-    )
 }
 
 
