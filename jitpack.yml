@@ -1,0 +1,8 @@
+jdk:
+  - openjdk17
+before_install:
+  - # Add commands here to be executed before the build process
+  - # For example, to install a specific JDK version using SDKMAN:
+  - sdk install java 17.0.1-open # Replace with the desired JDK 17 version
+  - sdk use java 17.0.1-open
+ 
