@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+
     `maven-publish`
 
 }
@@ -34,6 +36,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         viewBinding = true
         dataBinding = true
     }
@@ -74,7 +77,7 @@ publishing {
                 from(components["release"])
                 // groupId = "com.github.sagar"
                 //artifactId = "neopop-compose"
-               // version = "1.0.0"
+                // version = "1.0.0"
             }
         }
     }

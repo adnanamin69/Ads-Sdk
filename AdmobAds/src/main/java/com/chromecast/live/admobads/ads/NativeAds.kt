@@ -34,7 +34,7 @@ fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
         val view = LayoutInflater.from(context)
-            .inflate(com.chromecast.live.admobads.R.layout.native_frame_big, null, false)
+            .inflate(R.layout.native_frame_big, null, false)
             .let { view -> NativeFrameBigBinding.bind(view) }
         context?.nativeAdMedium(view.adFrameNative, unitId)
 
