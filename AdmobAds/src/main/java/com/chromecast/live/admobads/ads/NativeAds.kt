@@ -28,7 +28,7 @@ fun Context.nativeAdMainSmall(
 
     val txtAd = frameAd.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
 
-    if (!isNetworkAvailable(this)) {
+    if (!isNetworkAvailable(this) || isProUser()) {
         txtAd.visibility = View.GONE
         frameAd.visibility = View.GONE
         return
@@ -131,7 +131,7 @@ fun Activity.nativeAdMedium(
     val context = this
     val shimmerFrameLayout =
         frameLayout.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
-    if (!isNetworkAvailable(this)) {
+    if (!isNetworkAvailable(this) || isProUser()) {
         shimmerFrameLayout.visibility = View.GONE
         frameLayout.visibility = View.GONE
         return

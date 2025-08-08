@@ -23,7 +23,7 @@ fun Activity.loadBanner(
     frameLayout.visibility = View.VISIBLE
     val shimmerLayout = findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
 
-    if (!isNetworkAvailable(this)) {
+    if (!isNetworkAvailable(this) || isProUser()) {
         shimmerLayout.visibility = View.GONE
         frameLayout.visibility = View.GONE
         return

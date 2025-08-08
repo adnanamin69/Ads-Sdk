@@ -50,8 +50,14 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         clickIntervals: Int = 1,
         showLoading: Boolean = true,
         enableTimeLapse: Boolean = true,
-        onAdDismissed: ((Boolean) -> Unit)? = null,
+        onAdDismissed: ((Boolean) -> Unit),
     ) {
+
+
+        if (context.isProUser()) {
+            onAdDismissed.invoke(true)
+            return
+        }
 
 
         this.onAdDismissedCallback = onAdDismissed

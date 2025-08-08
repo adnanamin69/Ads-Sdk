@@ -11,7 +11,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 
 fun Activity.initAppOpenAd(adUnit: String, callBack: () -> Unit) {
-    if (!isInternetConnection()) {
+    if (!isInternetConnection() || isProUser()) {
         callBack.invoke()
         return
     }
