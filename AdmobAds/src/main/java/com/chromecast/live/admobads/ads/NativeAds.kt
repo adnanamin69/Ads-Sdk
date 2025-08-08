@@ -33,6 +33,7 @@ import com.sebaslogen.resaca.rememberScoped
 fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
+
         val view = LayoutInflater.from(context)
             .inflate(R.layout.native_frame_big, null, false)
             .let { view -> NativeFrameBigBinding.bind(view) }
