@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                     MobileAds.initialize(this@MainActivity) {}
                     Log.i("AppOpenAdManager", "SplashScreen: ")
 
-                    //  activity.nativeAdMedium(binding.nativeView.adFrameNative, nativeCard)
+           /*         //  activity.nativeAdMedium(binding.nativeView.adFrameNative, nativeCard)
                     initAppOpenAd("ca-app-pub-3940256099942544/9257395921") {
 
                         Toast.makeText(
@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
+*/
                     /*adManager.loadAndShowAd(activity, splashInterstitial, 1, false) {
                         if (it) {
                             findNavController().navigate(R.id.action_splashFragment_to_homeFragment)

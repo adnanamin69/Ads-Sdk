@@ -31,7 +31,7 @@ fun Activity.loadBanner(
 
 
 
-    shimmerLayout.stopShimmer()
+    shimmerLayout.startShimmer()
 
     // Initialize AdView
     val adView = AdView(this)
