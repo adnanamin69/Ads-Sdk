@@ -74,7 +74,7 @@ fun NativeSmall(modifier: Modifier = Modifier, unitId: String) {
 }
 
 @Composable
-fun BannerAd(modifier: Modifier = Modifier, adUnit: String) {
+fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsibleUp: Boolean = false) {
     val context = LocalActivity.current
 
     val binding = rememberScoped {
@@ -94,15 +94,10 @@ fun BannerAd(modifier: Modifier = Modifier, adUnit: String) {
             binding.root
         },
         update = {
-            context?.loadBanner(adUnit, it)
+            context?.loadBanner(adUnit, it, collapsibleUp)
         } // Only uses the remembered binding
     )
 }
-
-
-
-
-
 
 
 private const val TAG = "AdUtilss"

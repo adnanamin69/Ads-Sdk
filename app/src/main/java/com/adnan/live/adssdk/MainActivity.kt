@@ -58,16 +58,16 @@ class MainActivity : ComponentActivity() {
                     MobileAds.initialize(this@MainActivity) {}
                     Log.i("AppOpenAdManager", "SplashScreen: ")
 
-           /*         //  activity.nativeAdMedium(binding.nativeView.adFrameNative, nativeCard)
-                    initAppOpenAd("ca-app-pub-3940256099942544/9257395921") {
+                    /*         //  activity.nativeAdMedium(binding.nativeView.adFrameNative, nativeCard)
+                             initAppOpenAd("ca-app-pub-3940256099942544/9257395921") {
 
-                        Toast.makeText(
-                            this@MainActivity,
-                            "perform action after app open start",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-*/
+                                 Toast.makeText(
+                                     this@MainActivity,
+                                     "perform action after app open start",
+                                     Toast.LENGTH_SHORT
+                                 ).show()
+                             }
+         */
                     /*adManager.loadAndShowAd(activity, splashInterstitial, 1, false) {
                         if (it) {
                             findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
@@ -233,6 +233,13 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.fillMaxWidth(),
                                 adUnit = "ca-app-pub-3940256099942544/6300978111"
                             )
+
+                            BannerAd(
+                                modifier = Modifier.fillMaxWidth(),
+                                adUnit = "ca-app-pub-3940256099942544/9214589741",
+                                true
+                            )
+
 
 
                             NativeMedium(
