@@ -79,7 +79,7 @@ fun BannerAd(modifier: Modifier = Modifier, adUnit: String) {
 
     val binding = rememberScoped {
         val view = LayoutInflater.from(context)
-            .inflate(com.chromecast.live.admobads.R.layout.banner_frame, null, false)
+            .inflate(R.layout.banner_frame, null, false)
             .let { view -> BannerFrameBinding.bind(view) }
 
         view

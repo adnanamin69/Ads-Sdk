@@ -27,7 +27,7 @@ import kotlin.apply
 import kotlin.collections.any
 import kotlin.let
 
-class AppOpenAdManager(val context: Application, adUnit: String) :
+class AppOpenAdManager(val context: Application, val adUnit: String) :
     Application.ActivityLifecycleCallbacks,
     LifecycleObserver {
 
@@ -51,7 +51,6 @@ class AppOpenAdManager(val context: Application, adUnit: String) :
     private var loadingRunnable: Runnable? = null
 
     init {
-        appOpen = adUnit
         context.registerActivityLifecycleCallbacks(this)
     }
 
@@ -87,7 +86,7 @@ class AppOpenAdManager(val context: Application, adUnit: String) :
 
         AppOpenAd.load(
             context,
-            appOpen,
+            adUnit,
             request,
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {

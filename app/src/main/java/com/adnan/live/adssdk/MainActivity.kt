@@ -2,10 +2,8 @@ package com.adnan.live.adssdk
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.lifecycleScope
 import com.adnan.live.adssdk.ui.theme.AdsSdkTheme
 import com.chromecast.live.admobads.ads.BannerAd
@@ -36,15 +33,7 @@ import com.chromecast.live.admobads.ads.GoogleMobileAdsConsentManager
 import com.chromecast.live.admobads.ads.InterstitialAdManager
 import com.chromecast.live.admobads.ads.NativeMedium
 import com.chromecast.live.admobads.ads.NativeSmall
-import com.chromecast.live.admobads.ads.initAppOpenAd
-import com.chromecast.live.admobads.ads.loadBanner
-import com.chromecast.live.admobads.ads.nativeAdMainSmall
-import com.chromecast.live.admobads.ads.nativeAdMedium
-import com.chromecast.live.admobads.databinding.BannerFrameBinding
-import com.chromecast.live.admobads.databinding.NativeFrameBigBinding
-import com.chromecast.live.admobads.databinding.NativeFrameSmallBinding
 import com.google.android.gms.ads.MobileAds
-import com.sebaslogen.resaca.rememberScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
