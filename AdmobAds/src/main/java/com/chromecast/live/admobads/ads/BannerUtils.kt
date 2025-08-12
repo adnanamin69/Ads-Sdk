@@ -47,12 +47,11 @@ fun BannerAd(
     modifier: Modifier = Modifier,
     adUnit: String,
     collapsible: String? = null,
-    viewModel: BannerViewModel = viewModel()
 ) {
     val context = LocalActivity.current
 
     val binding = rememberScoped {
-        val view = viewModel.bannerBinding ?: LayoutInflater.from(context)
+        val view = LayoutInflater.from(context)
             .inflate(R.layout.banner_frame, null, false)
             .let { view -> BannerFrameBinding.bind(view) }
 
@@ -70,7 +69,7 @@ fun BannerAd(
     )
 
     // This ensures loadBanner is called only once per adUnit change
-    LaunchedEffect(viewModel.bannerBinding, adUnit, collapsible) {
+    LaunchedEffect(adUnit, collapsible) {
         context?.loadBanner(adUnit, binding.root, collapsible)
     }
 }
@@ -100,14 +99,13 @@ fun Activity.loadBanner(
     val shimmerLayout = findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
 
     if (!isNetworkAvailable(this) || isProUser()) {
-        shimmerLayout.visibility = View.GONE
+        shimmerLayout?.visibility = View.GONE
         frameLayout.visibility = View.GONE
         return
     }
 
 
-
-    shimmerLayout.startShimmer()
+    shimmerLayout?.startShimmer()
 
     // Initialize AdView
     val adView = AdView(this)
@@ -135,7 +133,7 @@ fun Activity.loadBanner(
             super.onAdLoaded()
             // Stop shimmer and hide it when ad is loaded
             shimmerLayout.stopShimmer()
-            shimmerLayout.visibility = View.GONE
+            shimmerLayout?.visibility = View.GONE
 
             frameLayout.removeAllViews()
             frameLayout.addView(adView)
@@ -147,7 +145,7 @@ fun Activity.loadBanner(
         override fun onAdFailedToLoad(error: LoadAdError) {
             super.onAdFailedToLoad(error)
             // Keep shimmer visible if ad fails to load
-            shimmerLayout.visibility = View.VISIBLE
+            shimmerLayout?.visibility = View.VISIBLE
         }
     }
 
