@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chromecast.live.admobads.R
 import com.chromecast.live.admobads.databinding.BannerFrameBinding
 
@@ -28,6 +30,11 @@ import com.sebaslogen.resaca.rememberScoped
 private const val TAG = "BannerUtils"
 
 
+class BannerViewModel : ViewModel() {
+    var bannerBinding: BannerFrameBinding? = null
+}
+
+
 /**
  * Composable function for displaying a banner ad with optional collapsible functionality
  *
@@ -36,7 +43,11 @@ private const val TAG = "BannerUtils"
  * @param collapsible Optional parameter for collapsible banner ads: "top", "bottom", or null
  */
 @Composable
-fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsible: String? = null) {
+fun BannerAd(
+    modifier: Modifier = Modifier,
+    adUnit: String,
+    collapsible: String? = null,
+) {
     val context = LocalActivity.current
 
     val binding = rememberScoped {
@@ -83,19 +94,18 @@ fun Activity.loadBanner(
     frameLayout: FrameLayout,
     collapsible: String? = null
 ) {
-    Log.i(TAG, "loadBanner: ")
+    Log.i(TAG, "loadBanner: $adUnit")
     frameLayout.visibility = View.VISIBLE
     val shimmerLayout = findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
 
     if (!isNetworkAvailable(this) || isProUser()) {
-        shimmerLayout.visibility = View.GONE
+        shimmerLayout?.visibility = View.GONE
         frameLayout.visibility = View.GONE
         return
     }
 
 
-
-    shimmerLayout.startShimmer()
+    shimmerLayout?.startShimmer()
 
     // Initialize AdView
     val adView = AdView(this)
@@ -123,9 +133,9 @@ fun Activity.loadBanner(
             super.onAdLoaded()
             // Stop shimmer and hide it when ad is loaded
             shimmerLayout.stopShimmer()
-            shimmerLayout.visibility = View.GONE
+            shimmerLayout?.visibility = View.GONE
 
-            //   frameLayout.removeAllViews()
+            frameLayout.removeAllViews()
             frameLayout.addView(adView)
 
             adView.visibility = View.VISIBLE
@@ -135,7 +145,7 @@ fun Activity.loadBanner(
         override fun onAdFailedToLoad(error: LoadAdError) {
             super.onAdFailedToLoad(error)
             // Keep shimmer visible if ad fails to load
-            shimmerLayout.visibility = View.VISIBLE
+            shimmerLayout?.visibility = View.VISIBLE
         }
     }
 
