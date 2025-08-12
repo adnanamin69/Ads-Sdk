@@ -27,7 +27,7 @@ import kotlin.apply
 import kotlin.collections.any
 import kotlin.let
 
-class AppOpenAdManager(val context: Application, adUnit: String) :
+class AppOpenAdManager(val context: Application, val adUnit: String) :
     Application.ActivityLifecycleCallbacks,
     LifecycleObserver {
 
@@ -51,7 +51,6 @@ class AppOpenAdManager(val context: Application, adUnit: String) :
     private var loadingRunnable: Runnable? = null
 
     init {
-        appOpen = adUnit
         context.registerActivityLifecycleCallbacks(this)
     }
 
@@ -70,6 +69,14 @@ class AppOpenAdManager(val context: Application, adUnit: String) :
     /** Load an ad. */
     fun loadAd() {
         // Don't load ad if there's already an ad loading or if ad is disabled by remote config
+
+
+        if (context.isProUser()) {
+            Log.d(TAG, "User has Premium subscription")
+            return
+        }
+
+
         if (isLoadingAd || isAdAvailable()) {
             return
         }
@@ -79,7 +86,7 @@ class AppOpenAdManager(val context: Application, adUnit: String) :
 
         AppOpenAd.load(
             context,
-            appOpen,
+            adUnit,
             request,
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {
@@ -100,6 +107,13 @@ class AppOpenAdManager(val context: Application, adUnit: String) :
     /** Show the ad if one isn't already showing. */
     fun showAdIfAvailable(activity: Activity) {
         // If the app open ad is already showing, do not show the ad again.
+
+        if (activity.isProUser()) {
+            Log.d(TAG, "User has Premium subscription")
+            return
+        }
+
+
         if (isShowingAd) {
             Log.d(TAG, "The app open ad is already showing.")
             return

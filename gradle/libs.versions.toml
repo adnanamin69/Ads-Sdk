@@ -1,5 +1,5 @@
 [versions]
-agp = "8.11.1"
+agp = "8.12.0"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -15,6 +15,7 @@ shimmer = "0.5.0"
 androidx-appcompat = "1.7.1"
 material = "1.12.0"
 resaca = "4.5.0"
+runtime = "1.8.3"
 
 
 
@@ -41,6 +42,7 @@ play-services-ads = { module = "com.google.android.gms:play-services-ads", versi
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 resaca = { module = "io.github.sebaslogen:resaca", version.ref = "resaca" }
+androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 
 
@@ -48,6 +50,7 @@ resaca = { module = "io.github.sebaslogen:resaca", version.ref = "resaca" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 
 

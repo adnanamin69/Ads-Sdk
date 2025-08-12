@@ -1,6 +1,7 @@
 package com.chromecast.live.admobads.ads
 
 import android.app.Activity
+import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.FrameLayout
 import com.chromecast.live.admobads.R
 
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -18,12 +20,13 @@ private const val TAG = "BannerUtils"
 fun Activity.loadBanner(
     adUnit: String,
     frameLayout: FrameLayout,
+    collapsibleUp: Boolean = false
 ) {
     Log.i(TAG, "loadBanner: ")
     frameLayout.visibility = View.VISIBLE
     val shimmerLayout = findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
 
-    if (!isNetworkAvailable(this)) {
+    if (!isNetworkAvailable(this) || isProUser()) {
         shimmerLayout.visibility = View.GONE
         frameLayout.visibility = View.GONE
         return
@@ -31,7 +34,7 @@ fun Activity.loadBanner(
 
 
 
-    shimmerLayout.stopShimmer()
+    shimmerLayout.startShimmer()
 
     // Initialize AdView
     val adView = AdView(this)
@@ -52,7 +55,6 @@ fun Activity.loadBanner(
 
 
     adView.setAdSize(size)
-    frameLayout.addView(adView)
 
     // Set AdListener to handle ad events
     adView.adListener = object : AdListener() {
@@ -61,7 +63,12 @@ fun Activity.loadBanner(
             // Stop shimmer and hide it when ad is loaded
             shimmerLayout.stopShimmer()
             shimmerLayout.visibility = View.GONE
+
+            frameLayout.removeAllViews()
+            frameLayout.addView(adView)
+
             adView.visibility = View.VISIBLE
+            Log.i(TAG, "onAdLoaded: ")
         }
 
         override fun onAdFailedToLoad(error: LoadAdError) {
@@ -71,7 +78,19 @@ fun Activity.loadBanner(
         }
     }
 
+
+    val extras = Bundle()
+    extras.putString("collapsible", "bottom")
+
+
     // Load the ad
-    val adRequest = AdRequest.Builder().build()
+    val adRequest =
+        if (collapsibleUp)
+            AdRequest.Builder()
+                .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                .build()
+        else AdRequest.Builder()
+            .build()
+
     adView.loadAd(adRequest)
 }

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+
     `maven-publish`
 
 }
@@ -34,6 +36,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         viewBinding = true
         dataBinding = true
     }
@@ -44,6 +47,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -51,6 +55,19 @@ dependencies {
     implementation(libs.sdp.android)
     implementation(libs.ssp.android)
     implementation(libs.shimmer)
+
+
+
+
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+
+    implementation(libs.resaca)
+
 }
 
 publishing {
@@ -60,7 +77,7 @@ publishing {
                 from(components["release"])
                 // groupId = "com.github.sagar"
                 //artifactId = "neopop-compose"
-               // version = "1.0.0"
+                // version = "1.0.0"
             }
         }
     }

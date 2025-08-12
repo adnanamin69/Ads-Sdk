@@ -9,7 +9,15 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import com.chromecast.live.admobads.R
+import com.chromecast.live.admobads.databinding.BannerFrameBinding
+import com.chromecast.live.admobads.databinding.NativeFrameBigBinding
+import com.chromecast.live.admobads.databinding.NativeFrameSmallBinding
 
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.ads.AdListener
@@ -18,6 +26,78 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.sebaslogen.resaca.rememberScoped
+
+
+@Composable
+fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
+    val context = LocalActivity.current
+    val binding = rememberScoped("ad") {
+
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.native_frame_big, null, false)
+            .let { view -> NativeFrameBigBinding.bind(view) }
+        context?.nativeAdMedium(view.adFrameNative, unitId)
+
+        view
+
+    }
+
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            binding.root
+        }// Only uses the remembered binding
+    )
+}
+
+
+@Composable
+fun NativeSmall(modifier: Modifier = Modifier, unitId: String) {
+    val context = LocalActivity.current
+    val binding = rememberScoped("ad") {
+        val view = LayoutInflater.from(context)
+            .inflate(com.chromecast.live.admobads.R.layout.native_frame_small, null, false)
+            .let { view -> NativeFrameSmallBinding.bind(view) }
+        context?.nativeAdMainSmall(view.adFrameNative, unitId)
+
+        view
+
+    }
+
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            binding.root
+        }// Only uses the remembered binding
+    )
+}
+
+@Composable
+fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsibleUp: Boolean = false) {
+    val context = LocalActivity.current
+
+    val binding = rememberScoped {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.banner_frame, null, false)
+            .let { view -> BannerFrameBinding.bind(view) }
+
+        view
+
+    }
+
+
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth(),
+        factory = {
+            binding.root
+        },
+        update = {
+            context?.loadBanner(adUnit, it, collapsibleUp)
+        } // Only uses the remembered binding
+    )
+}
 
 
 private const val TAG = "AdUtilss"
@@ -28,7 +108,7 @@ fun Context.nativeAdMainSmall(
 
     val txtAd = frameAd.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
 
-    if (!isNetworkAvailable(this)) {
+    if (!isNetworkAvailable(this) || isProUser()) {
         txtAd.visibility = View.GONE
         frameAd.visibility = View.GONE
         return
@@ -131,7 +211,7 @@ fun Activity.nativeAdMedium(
     val context = this
     val shimmerFrameLayout =
         frameLayout.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
-    if (!isNetworkAvailable(this)) {
+    if (!isNetworkAvailable(this) || isProUser()) {
         shimmerFrameLayout.visibility = View.GONE
         frameLayout.visibility = View.GONE
         return

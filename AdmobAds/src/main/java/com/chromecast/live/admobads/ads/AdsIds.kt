@@ -1,12 +1,12 @@
 package com.chromecast.live.admobads.ads
 
 // App Open Ad - Show immediately after app is launched
-var appOpen = ""
-var appOpenSplash = ""
+//var appOpen = ""
+/*var appOpenSplash = ""
 var splashInterstitial = ""
 var homeInterstitial = ""
 var banner = ""
-var nativeCard = ""
+var nativeCard = ""*/
 
 fun setTestIds() {
 
@@ -16,12 +16,12 @@ fun setTestIds() {
     //  val appIdTest = "ca-app-pub-3940256099942544~3347511713"//test
     val nativeIdTest = "ca-app-pub-3940256099942544/2247696110"//test
 
-    appOpen = appOpenIdTest
-    appOpenSplash = appOpenIdTest
-    splashInterstitial = interstitialIdTest
-    homeInterstitial = interstitialIdTest
-    banner = bannerIdTest
-    nativeCard = nativeIdTest
+    //  appOpen = appOpenIdTest
+    /*    appOpenSplash = appOpenIdTest
+        splashInterstitial = interstitialIdTest
+        homeInterstitial = interstitialIdTest
+        banner = bannerIdTest
+        nativeCard = nativeIdTest*/
 
 }
 
