@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chromecast.live.admobads.R
 import com.chromecast.live.admobads.databinding.BannerFrameBinding
 
@@ -28,6 +30,11 @@ import com.sebaslogen.resaca.rememberScoped
 private const val TAG = "BannerUtils"
 
 
+class BannerViewModel : ViewModel() {
+    var bannerBinding: BannerFrameBinding? = null
+}
+
+
 /**
  * Composable function for displaying a banner ad with optional collapsible functionality
  *
@@ -36,11 +43,16 @@ private const val TAG = "BannerUtils"
  * @param collapsible Optional parameter for collapsible banner ads: "top", "bottom", or null
  */
 @Composable
-fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsible: String? = null) {
+fun BannerAd(
+    modifier: Modifier = Modifier,
+    adUnit: String,
+    collapsible: String? = null,
+    viewModel: BannerViewModel = viewModel()
+) {
     val context = LocalActivity.current
 
     val binding = rememberScoped {
-        val view = LayoutInflater.from(context)
+        val view = viewModel.bannerBinding ?: LayoutInflater.from(context)
             .inflate(R.layout.banner_frame, null, false)
             .let { view -> BannerFrameBinding.bind(view) }
 
@@ -58,7 +70,7 @@ fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsible: String?
     )
 
     // This ensures loadBanner is called only once per adUnit change
-    LaunchedEffect(adUnit, collapsible) {
+    LaunchedEffect(viewModel.bannerBinding, adUnit, collapsible) {
         context?.loadBanner(adUnit, binding.root, collapsible)
     }
 }
@@ -83,7 +95,7 @@ fun Activity.loadBanner(
     frameLayout: FrameLayout,
     collapsible: String? = null
 ) {
-    Log.i(TAG, "loadBanner: ")
+    Log.i(TAG, "loadBanner: $adUnit")
     frameLayout.visibility = View.VISIBLE
     val shimmerLayout = findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
 
@@ -125,7 +137,7 @@ fun Activity.loadBanner(
             shimmerLayout.stopShimmer()
             shimmerLayout.visibility = View.GONE
 
-            //   frameLayout.removeAllViews()
+            frameLayout.removeAllViews()
             frameLayout.addView(adView)
 
             adView.visibility = View.VISIBLE
