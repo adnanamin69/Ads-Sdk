@@ -42,11 +42,11 @@ In your app or module `build.gradle` or `build.gradle.kts`:
 
 ```
 dependencies {
-    implementation("com.github.adnanamin69:AdsSdk:1.2") // Use the latest release version from JitPack
+    implementation("com.github.adnanamin69:AdsSdk:1.3") // Use the latest release version from JitPack
 }
 ```
 
-Replace `1.2` with the latest version from
+Replace `1.3` with the latest version from
 the [JitPack Releases](https://jitpack.io/#adnanamin69/Ads-Sdk).
 
 ---
