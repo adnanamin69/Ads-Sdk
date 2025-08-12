@@ -29,6 +29,12 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.sebaslogen.resaca.rememberScoped
 
 
+/**
+ * Composable function for displaying a medium-sized native ad
+ * 
+ * @param modifier Compose modifier for styling and layout
+ * @param unitId The AdMob native ad unit ID
+ */
 @Composable
 fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
     val context = LocalActivity.current
@@ -52,6 +58,12 @@ fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
 }
 
 
+/**
+ * Composable function for displaying a small-sized native ad
+ * 
+ * @param modifier Compose modifier for styling and layout
+ * @param unitId The AdMob native ad unit ID
+ */
 @Composable
 fun NativeSmall(modifier: Modifier = Modifier, unitId: String) {
     val context = LocalActivity.current
@@ -73,34 +85,18 @@ fun NativeSmall(modifier: Modifier = Modifier, unitId: String) {
     )
 }
 
-@Composable
-fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsibleUp: Boolean = false) {
-    val context = LocalActivity.current
-
-    val binding = rememberScoped {
-        val view = LayoutInflater.from(context)
-            .inflate(R.layout.banner_frame, null, false)
-            .let { view -> BannerFrameBinding.bind(view) }
-
-        view
-
-    }
-
-
-    AndroidView(
-        modifier = modifier
-            .fillMaxWidth(),
-        factory = {
-            binding.root
-        },
-        update = {
-            context?.loadBanner(adUnit, it, collapsibleUp)
-        } // Only uses the remembered binding
-    )
-}
 
 
 private const val TAG = "AdUtilss"
+
+/**
+ * Loads a small native ad into the specified FrameLayout
+ * 
+ * @param frameAd The FrameLayout container where the small native ad will be displayed
+ * @param adUnit The AdMob native ad unit ID
+ * 
+ * Small native ads are text-only ads without media content, suitable for compact layouts.
+ */
 fun Context.nativeAdMainSmall(
     frameAd: FrameLayout,
     adUnit: String
@@ -153,6 +149,15 @@ fun Context.nativeAdMainSmall(
 
 }
 
+/**
+ * Populates a small native ad view with ad content
+ * 
+ * @param nativeAd The NativeAd object containing the ad data
+ * @param adView The NativeAdView to populate with ad content
+ * 
+ * This function sets up the small native ad layout with headline, body text, call-to-action button,
+ * and app icon. It handles cases where certain ad assets might be missing.
+ */
 fun populateUnifiedNativeAdViewSmall(
     nativeAd: NativeAd,
     adView: NativeAdView,
@@ -204,6 +209,15 @@ fun populateUnifiedNativeAdViewSmall(
 }
 
 
+/**
+ * Loads a medium native ad into the specified FrameLayout
+ * 
+ * @param frameLayout The FrameLayout container where the medium native ad will be displayed
+ * @param adUnit The AdMob native ad unit ID
+ * 
+ * Medium native ads include media content (images/videos) along with text elements,
+ * providing a richer advertising experience compared to small native ads.
+ */
 fun Activity.nativeAdMedium(
     frameLayout: FrameLayout,
     adUnit: String
@@ -256,6 +270,16 @@ fun Activity.nativeAdMedium(
 
 }
 
+/**
+ * Populates a medium native ad view with ad content including media
+ * 
+ * @param nativeAd The NativeAd object containing the ad data
+ * @param adView The NativeAdView to populate with ad content
+ * 
+ * This function sets up the medium native ad layout with headline, body text, call-to-action button,
+ * app icon, media content (images/videos), and advertiser information. It handles cases where
+ * certain ad assets might be missing.
+ */
 fun Activity.populateUnifiedNativeAd(
     nativeAd: NativeAd,
     adView: NativeAdView,
@@ -318,6 +342,12 @@ fun Activity.populateUnifiedNativeAd(
 }
 
 
+/**
+ * Checks if the device has an active network connection
+ * 
+ * @param context The context to access system services
+ * @return true if network is available and connected, false otherwise
+ */
 fun isNetworkAvailable(context: Context): Boolean {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

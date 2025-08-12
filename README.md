@@ -11,8 +11,9 @@ in your Android applications. Published on JitPack for simple dependency managem
 
 - **App Open Ads**: Show ads when users open or return to your app.
 - **Interstitial Ads**: Full-screen ads at natural transition points.
-- **Banner Ads**: Adaptive banners for various screen sizes.
-- **Native Ads**: Customizable ad layouts for seamless UI integration.
+- **Banner Ads**: Adaptive banners for various screen sizes with collapsible support.
+- **Native Ads**: Customizable ad layouts for seamless UI integration (small and medium sizes).
+- **Jetpack Compose Support**: Composable functions for easy integration in modern Android apps.
 - **GDPR Consent**: Built-in consent management using Google UMP SDK.
 - **Sample App**: Included for quick reference and testing.
 
@@ -168,6 +169,7 @@ You can then use `adManager.loadAndShowAd(...)` as shown above.
 
 ### 4. Load Banner Ad
 
+#### Traditional View-based Usage
 ```kotlin
 activity.loadBanner(
     "<ad_unit_id>", // Your AdMob Banner Ad unit ID
@@ -175,15 +177,54 @@ activity.loadBanner(
 )
 ```
 
-**Arguments:**
+#### Collapsible Banner Ads
+You can also create collapsible banner ads that expand when clicked and collapse when dismissed:
+
+```kotlin
+activity.loadBanner(
+    "<ad_unit_id>", // Your AdMob Banner Ad unit ID
+    frameLayout,    // The FrameLayout where the banner will be displayed
+    collapsible = "top" // Collapsible position: "top" or "bottom"
+)
+```
+
+#### Jetpack Compose Usage
+```kotlin
+BannerAd(
+    modifier = Modifier.fillMaxWidth(),
+    adUnit = "ca-app-pub-3940256099942544/6300978111"
+)
+
+// With collapsible functionality
+BannerAd(
+    modifier = Modifier.fillMaxWidth(),
+    adUnit = "ca-app-pub-3940256099942544/9214589741",
+    collapsible = "top" // or "bottom"
+)
+```
+
+**Arguments for Traditional Usage:**
 
 - `<ad_unit_id>`: Your AdMob Banner Ad unit ID (string).
 - `frameLayout`: The FrameLayout view in your layout where the banner ad will be loaded.
+- `collapsible`: (Optional) String specifying the collapsible position:
+  - `"top"`: The top of the expanded ad aligns to the top of the collapsed ad (ad placed at top of screen)
+  - `"bottom"`: The bottom of the expanded ad aligns to the bottom of the collapsed ad (ad placed at bottom of screen)
+  - `null` or omitted: Regular banner ad (non-collapsible)
+
+**Arguments for Compose Usage:**
+
+- `modifier`: Compose modifier for styling and layout
+- `adUnit`: Your AdMob Banner Ad unit ID (string)
+- `collapsible`: (Optional) String for collapsible banner ads: "top", "bottom", or null
 
 ---
 
 ### 5. Load Native Ad
 
+#### Traditional View-based Usage
+
+**Small Native Ad**
 ```kotlin
 context.nativeAdMainSmall(
     frameAd,        // The FrameLayout where the native ad will be displayed
@@ -191,10 +232,48 @@ context.nativeAdMainSmall(
 )
 ```
 
-**Arguments:**
+**Medium Native Ad**
+```kotlin
+activity.nativeAdMedium(
+    frameLayout,    // The FrameLayout where the native ad will be displayed
+    "<ad_unit_id>" // Your AdMob Native Ad unit ID
+)
+```
 
+#### Jetpack Compose Usage
+
+**Small Native Ad (Text-only)**
+```kotlin
+NativeSmall(
+    modifier = Modifier.fillMaxWidth(),
+    unitId = "ca-app-pub-3940256099942544/2247696110"
+)
+```
+
+**Medium Native Ad (With Media Content)**
+```kotlin
+NativeMedium(
+    modifier = Modifier.fillMaxWidth(),
+    unitId = "ca-app-pub-3940256099942544/2247696110"
+)
+```
+
+**Arguments for Traditional Usage:**
+
+**Small Native Ad:**
 - `frameAd`: The FrameLayout view in your layout where the native ad will be loaded.
 - `<ad_unit_id>`: Your AdMob Native Ad unit ID (string).
+
+**Medium Native Ad:**
+- `frameLayout`: The FrameLayout view in your layout where the native ad will be loaded.
+- `<ad_unit_id>`: Your AdMob Native Ad unit ID (string).
+
+**Arguments for Compose Usage:**
+
+- `modifier`: Compose modifier for styling and layout
+- `unitId`: Your AdMob Native Ad unit ID (string)
+
+**Note:** Medium native ads include media content (images/videos) while small native ads are text-only.
 
 See the [sample app](app/src/main/java/com/adnan/live/adssdk/MainActivity.kt) for a complete
 integration example.
