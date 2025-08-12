@@ -122,7 +122,7 @@ fun Activity.loadBanner(
             shimmerLayout.stopShimmer()
             shimmerLayout.visibility = View.GONE
 
-            frameLayout.removeAllViews()
+         //   frameLayout.removeAllViews()
             frameLayout.addView(adView)
 
             adView.visibility = View.VISIBLE
