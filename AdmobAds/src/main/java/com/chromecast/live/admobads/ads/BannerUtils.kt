@@ -4,9 +4,16 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import com.chromecast.live.admobads.R
+import com.chromecast.live.admobads.databinding.BannerFrameBinding
 
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -15,12 +22,63 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import com.sebaslogen.resaca.rememberScoped
 
 private const val TAG = "BannerUtils"
+
+
+/**
+ * Composable function for displaying a banner ad with optional collapsible functionality
+ *
+ * @param modifier Compose modifier for styling and layout
+ * @param adUnit The AdMob banner ad unit ID
+ * @param collapsible Optional parameter for collapsible banner ads: "top", "bottom", or null
+ */
+@Composable
+fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsible: String? = null) {
+    val context = LocalActivity.current
+
+    val binding = rememberScoped {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.banner_frame, null, false)
+            .let { view -> BannerFrameBinding.bind(view) }
+
+        view
+
+    }
+
+
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth(),
+        factory = {
+            binding.root
+        },
+        update = {
+            context?.loadBanner(adUnit, it, collapsible)
+        } // Only uses the remembered binding
+    )
+}
+
+
+/**
+ * Loads a banner ad into the specified FrameLayout
+ *
+ * @param adUnit The AdMob ad unit ID for the banner ad
+ * @param frameLayout The FrameLayout container where the banner ad will be displayed
+ * @param collapsible Optional parameter to create collapsible banner ads:
+ *   - "top": The top of the expanded ad aligns to the top of the collapsed ad (ad placed at top of screen)
+ *   - "bottom": The bottom of the expanded ad aligns to the bottom of the collapsed ad (ad placed at bottom of screen)
+ *   - null or omitted: Regular banner ad (non-collapsible)
+ *
+ * Collapsible banner ads expand when clicked and collapse when dismissed, providing a better user experience
+ * by not taking up permanent screen space while still being easily accessible.
+ */
+
 fun Activity.loadBanner(
     adUnit: String,
     frameLayout: FrameLayout,
-    collapsibleUp: Boolean = false
+    collapsible: String? = null
 ) {
     Log.i(TAG, "loadBanner: ")
     frameLayout.visibility = View.VISIBLE
@@ -80,12 +138,12 @@ fun Activity.loadBanner(
 
 
     val extras = Bundle()
-    extras.putString("collapsible", "bottom")
+    extras.putString("collapsible", collapsible)
 
 
     // Load the ad
     val adRequest =
-        if (collapsibleUp)
+        if (collapsible != null)
             AdRequest.Builder()
                 .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
                 .build()
