@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.chromecast.live.admobads.R
@@ -53,11 +54,13 @@ fun BannerAd(modifier: Modifier = Modifier, adUnit: String, collapsible: String?
             .fillMaxWidth(),
         factory = {
             binding.root
-        },
-        update = {
-            context?.loadBanner(adUnit, it, collapsible)
-        } // Only uses the remembered binding
+        }// Only uses the remembered binding
     )
+
+    // This ensures loadBanner is called only once per adUnit change
+    LaunchedEffect(adUnit, collapsible) {
+        context?.loadBanner(adUnit, binding.root, collapsible)
+    }
 }
 
 
@@ -122,7 +125,7 @@ fun Activity.loadBanner(
             shimmerLayout.stopShimmer()
             shimmerLayout.visibility = View.GONE
 
-         //   frameLayout.removeAllViews()
+            //   frameLayout.removeAllViews()
             frameLayout.addView(adView)
 
             adView.visibility = View.VISIBLE
