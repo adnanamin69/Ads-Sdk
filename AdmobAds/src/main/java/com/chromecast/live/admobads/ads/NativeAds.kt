@@ -31,7 +31,7 @@ import com.sebaslogen.resaca.rememberScoped
 
 /**
  * Composable function for displaying a medium-sized native ad
- * 
+ *
  * @param modifier Compose modifier for styling and layout
  * @param unitId The AdMob native ad unit ID
  */
@@ -60,7 +60,7 @@ fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
 
 /**
  * Composable function for displaying a small-sized native ad
- * 
+ *
  * @param modifier Compose modifier for styling and layout
  * @param unitId The AdMob native ad unit ID
  */
@@ -81,20 +81,20 @@ fun NativeSmall(modifier: Modifier = Modifier, unitId: String) {
         modifier = modifier,
         factory = {
             binding.root
-        }// Only uses the remembered binding
+        }
+        // Only uses the remembered binding
     )
 }
-
 
 
 private const val TAG = "AdUtilss"
 
 /**
  * Loads a small native ad into the specified FrameLayout
- * 
+ *
  * @param frameAd The FrameLayout container where the small native ad will be displayed
  * @param adUnit The AdMob native ad unit ID
- * 
+ *
  * Small native ads are text-only ads without media content, suitable for compact layouts.
  */
 fun Context.nativeAdMainSmall(
@@ -151,10 +151,10 @@ fun Context.nativeAdMainSmall(
 
 /**
  * Populates a small native ad view with ad content
- * 
+ *
  * @param nativeAd The NativeAd object containing the ad data
  * @param adView The NativeAdView to populate with ad content
- * 
+ *
  * This function sets up the small native ad layout with headline, body text, call-to-action button,
  * and app icon. It handles cases where certain ad assets might be missing.
  */
@@ -211,10 +211,10 @@ fun populateUnifiedNativeAdViewSmall(
 
 /**
  * Loads a medium native ad into the specified FrameLayout
- * 
+ *
  * @param frameLayout The FrameLayout container where the medium native ad will be displayed
  * @param adUnit The AdMob native ad unit ID
- * 
+ *
  * Medium native ads include media content (images/videos) along with text elements,
  * providing a richer advertising experience compared to small native ads.
  */
@@ -272,10 +272,10 @@ fun Activity.nativeAdMedium(
 
 /**
  * Populates a medium native ad view with ad content including media
- * 
+ *
  * @param nativeAd The NativeAd object containing the ad data
  * @param adView The NativeAdView to populate with ad content
- * 
+ *
  * This function sets up the medium native ad layout with headline, body text, call-to-action button,
  * app icon, media content (images/videos), and advertiser information. It handles cases where
  * certain ad assets might be missing.
@@ -344,7 +344,7 @@ fun Activity.populateUnifiedNativeAd(
 
 /**
  * Checks if the device has an active network connection
- * 
+ *
  * @param context The context to access system services
  * @return true if network is available and connected, false otherwise
  */
