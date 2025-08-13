@@ -11,6 +11,7 @@ in your Android applications. Published on JitPack for simple dependency managem
 
 - **App Open Ads**: Show ads when users open or return to your app.
 - **Interstitial Ads**: Full-screen ads at natural transition points.
+- **Rewarded Interstitial Ads**: Full-screen ads that grant a reward upon completion.
 - **Banner Ads**: Adaptive banners for various screen sizes with collapsible support.
 - **Native Ads**: Customizable ad layouts for seamless UI integration (small and medium sizes).
 - **Jetpack Compose Support**: Composable functions for easy integration in modern Android apps.
@@ -138,6 +139,43 @@ adManager.loadAndShowAd(
     enableTimeLapse = true, // (Optional) Prevents showing ads too frequently (default: true)
 ) { wasShown ->
     // Callback after ad is dismissed or not shown
+}
+```
+
+#### Rewarded Interstitial
+
+```kotlin
+val adManager = InterstitialAdManager()
+adManager.loadAndShowAd(
+    context,                         // Activity context required to show the ad
+    "<ad_unit_id>",                 // Your AdMob Rewarded Interstitial Ad unit ID
+    clickIntervals = 1,              // (Optional) Show ad every Nth click (default: 1)
+    showLoading = true,              // (Optional) Show loading dialog while ad loads (default: true)
+    enableTimeLapse = true,          // (Optional) Prevents showing ads too frequently (default: true)
+    isReward = true                  // IMPORTANT: Enable rewarded interstitial
+) { wasRewarded ->
+    if (wasRewarded) {
+        // Grant the reward to the user
+    } else {
+        // User closed or no reward earned
+    }
+}
+```
+
+**Notes:**
+- The callback parameter (`wasRewarded`) is `true` if the user earned the reward, `false` otherwise.
+- All configuration options (`adTimeout`, `timeLapseDifference`, `clickIntervals`, `showLoading`, `enableTimeLapse`) work the same as for interstitials.
+
+**Access reward details:**
+
+```kotlin
+val adManager = InterstitialAdManager()
+adManager.loadAndShowAd(context, "<ad_unit_id>", isReward = true) { wasRewarded ->
+    if (wasRewarded) {
+        val amount = adManager.rewardAmount
+        val type = adManager.rewardType
+        // Grant `amount` of `type` to the user
+    }
 }
 ```
 
