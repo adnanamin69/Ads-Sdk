@@ -166,10 +166,11 @@ class MainActivity : ComponentActivity() {
 
                             adManager.loadAndShowAd(
                                 this@MainActivity,
-                                "ca-app-pub-3940256099942544/1033173712",
+                                "ca-app-pub-3940256099942544/5354046379",
                                 clickIntervals = 1,
                                 enableTimeLapse = false,
-                                showLoading = true
+                                showLoading = true,
+                                isReward = true
                             ) {
                                 Toast.makeText(
                                     this@MainActivity,

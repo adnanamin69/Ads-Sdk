@@ -1,5 +1,6 @@
 package com.chromecast.live.admobads.ads
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Handler
@@ -17,6 +18,8 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import java.util.concurrent.atomic.AtomicBoolean
 
 class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifference: Long = 15000L) {
@@ -28,6 +31,7 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
     }
 
     private var interstitialAd: InterstitialAd? = null
+    private var interstitialRewardedAd: RewardedInterstitialAd? = null
     private var isLoading = AtomicBoolean(false)
     private var isAdReady = AtomicBoolean(false)
     private var loadingDialog: Dialog? = null
@@ -36,6 +40,9 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
     private var currentAdUnitId: String? = null
     private var onAdDismissedCallback: ((Boolean) -> Unit)? = null
     private var showLoading: Boolean = true
+
+    var rewardAmount: Int = 0
+    var rewardType: String = ""
 
     /**
      * Load and show interstitial ad with all the specified requirements
@@ -50,6 +57,7 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         clickIntervals: Int = 1,
         showLoading: Boolean = true,
         enableTimeLapse: Boolean = true,
+        isReward: Boolean = false,
         onAdDismissed: ((Boolean) -> Unit),
     ) {
 
@@ -63,6 +71,12 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         this.onAdDismissedCallback = onAdDismissed
         this.showLoading = showLoading
 
+
+        if (rewardAmount > 0) {
+            rewardAmount = 0
+            onAdDismissed.invoke(true)
+            return
+        }
 
 
         Log.i(
@@ -78,7 +92,7 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
 
         // Check if we should show ad immediately (every 3rd click)
         if (clickCount % clickIntervals != 0 || (timeCheck && enableTimeLapse)) {
-            onAdDismissed?.invoke(false)
+            onAdDismissed.invoke(false)
             return
         }
 
@@ -91,16 +105,26 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         }
 
         // If ad is ready and same ad unit, show it
-        if (isAdReady.get() && interstitialAd != null) {
+        if (isAdReady.get() && interstitialAd != null && !isReward) {
             showAd(context)
             return
         }
 
+        // If ad is ready and same ad unit, show it
+        if (isAdReady.get() && interstitialAd != null && isReward) {
+            showAdReward(context)
+            return
+        }
 
+
+
+        if (!isReward)
         // Load new ad
-        loadAd(
-            context, adUnitId
-        )
+            loadAd(
+                context, adUnitId
+            )
+        else loadRewardAd(context, adUnitId)
+
     }
 
     private fun loadAd(context: Context, adUnitId: String) {
@@ -138,7 +162,7 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
                     hideLoadingDialog()
 
                     // Set up ad callbacks
-                    setupAdCallbacks(context)
+                    setupAdCallbacks()
 
                     // Show ad immediately
                     showAd(context)
@@ -163,7 +187,69 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         )
     }
 
-    private fun setupAdCallbacks(context: Context) {
+
+    private fun loadRewardAd(context: Context, adUnitId: String) {
+        if (isLoading.getAndSet(true)) {
+            return
+        }
+
+        currentAdUnitId = adUnitId
+        isAdReady.set(false)
+
+        // Show loading dialog
+        if (showLoading)
+            showLoadingDialog(context)
+
+        // Set timeout
+        setupTimeout()
+
+        val adRequest = AdRequest.Builder().build()
+
+        RewardedInterstitialAd.load(
+            context,
+            adUnitId,
+            adRequest,
+            object : RewardedInterstitialAdLoadCallback() {
+                override fun onAdLoaded(ad: RewardedInterstitialAd) {
+                    Log.d(TAG, "RewardedInterstitial ad loaded successfully")
+                    isLoading.set(false)
+                    isAdReady.set(true)
+                    interstitialRewardedAd = ad
+
+                    // Cancel timeout since ad loaded successfully
+                    cancelTimeout()
+
+                    // Hide loading dialog
+                    hideLoadingDialog()
+
+                    // Set up ad callbacks
+                    setupRewardedAdCallbacks()
+
+                    // Show ad immediately
+                    showAdReward(context)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Log.e(TAG, "Interstitial ad failed to load: ${loadAdError.message}")
+                    isLoading.set(false)
+                    isAdReady.set(false)
+                    interstitialRewardedAd = null
+
+                    // Cancel timeout
+                    cancelTimeout()
+
+                    // Hide loading dialog
+                    hideLoadingDialog()
+
+                    // Perform failed callback
+                    onAdDismissedCallback?.invoke(false)
+                }
+            }
+        )
+    }
+
+
+    private fun setupAdCallbacks() {
         interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 Log.d(TAG, "Interstitial ad was dismissed")
@@ -189,9 +275,54 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         }
     }
 
+    private fun setupRewardedAdCallbacks() {
+        interstitialRewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                Log.d(TAG, "Interstitial ad was dismissed")
+                isAdReady.set(false)
+                interstitialRewardedAd = null
+                timeLapse = System.currentTimeMillis() + timeLapseDifference
+                // Perform dismissed callback
+                if (rewardAmount > 0) {
+                    rewardAmount = 0
+                    onAdDismissedCallback?.invoke(true)
+                } else onAdDismissedCallback?.invoke(false)
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                Log.e(TAG, "Interstitial ad failed to show: ${adError.message}")
+                isAdReady.set(false)
+                interstitialRewardedAd = null
+
+                // Perform failed callback
+                onAdDismissedCallback?.invoke(false)
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                Log.d(TAG, "RewardedInterstitial ad showed full screen content")
+            }
+        }
+    }
+
     private fun showAd(context: Context) {
-        if (context is ComponentActivity && !context.isFinishing && !context.isDestroyed) {
+        if (context is Activity && !context.isFinishing && !context.isDestroyed) {
             interstitialAd?.show(context)
+        } else {
+            Log.e(TAG, "Context is not valid for showing ad")
+            onAdDismissedCallback?.invoke(false)
+        }
+    }
+
+    private fun showAdReward(context: Context) {
+        Log.i(TAG, "showAdRewardBefore: $rewardType : : $rewardAmount")
+
+        if (context is Activity && !context.isFinishing && !context.isDestroyed) {
+            interstitialRewardedAd?.show(context) {
+                rewardAmount = it.amount
+                rewardType = it.type
+
+                Log.i(TAG, "showAdReward: $rewardType : : $rewardAmount")
+            }
         } else {
             Log.e(TAG, "Context is not valid for showing ad")
             onAdDismissedCallback?.invoke(false)
