@@ -30,11 +30,6 @@ import com.sebaslogen.resaca.rememberScoped
 private const val TAG = "BannerUtils"
 
 
-class BannerViewModel : ViewModel() {
-    var bannerBinding: BannerFrameBinding? = null
-}
-
-
 /**
  * Composable function for displaying a banner ad with optional collapsible functionality
  *
@@ -132,7 +127,7 @@ fun Activity.loadBanner(
         override fun onAdLoaded() {
             super.onAdLoaded()
             // Stop shimmer and hide it when ad is loaded
-            shimmerLayout.stopShimmer()
+            shimmerLayout?.stopShimmer()
             shimmerLayout?.visibility = View.GONE
 
             frameLayout.removeAllViews()

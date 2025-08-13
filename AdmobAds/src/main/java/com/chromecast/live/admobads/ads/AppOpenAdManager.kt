@@ -300,6 +300,9 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
 
 
     private fun isAppInForeground(): Boolean {
+        if (context.isProUser())
+            return false
+
         val activityManager =
             currentActivity?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val runningProcesses = activityManager.runningAppProcesses
