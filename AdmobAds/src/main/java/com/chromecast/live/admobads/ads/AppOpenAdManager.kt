@@ -304,8 +304,11 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
             return false
 
         val activityManager =
-            currentActivity?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningProcesses = activityManager.runningAppProcesses
-        return runningProcesses?.any { it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND } == true
+            currentActivity?.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+                ?: return false // cannot get ActivityManager, assume app is not in foreground
+
+        val runningProcesses = activityManager.runningAppProcesses ?: return false
+        return runningProcesses.any { it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND }
     }
+
 } 
