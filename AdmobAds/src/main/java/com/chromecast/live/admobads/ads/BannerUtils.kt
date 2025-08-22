@@ -89,9 +89,16 @@ fun Activity.loadBanner(
     frameLayout: FrameLayout,
     collapsible: String? = null
 ) {
+
+
+    val bannerview = LayoutInflater.from(this).inflate(R.layout.banner_frame, null, false)
+    frameLayout.removeAllViews()
+    frameLayout.addView(bannerview)
+
+
     Log.i(TAG, "loadBanner: $adUnit")
     frameLayout.visibility = View.VISIBLE
-    val shimmerLayout = findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
+    val shimmerLayout = frameLayout.findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
 
     if (!isNetworkAvailable(this) || isProUser()) {
         shimmerLayout?.visibility = View.GONE
