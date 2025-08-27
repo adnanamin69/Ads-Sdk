@@ -120,11 +120,6 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
         }
 
 
-        if (timeLapse > System.currentTimeMillis()) {
-            Log.d(TAG, "showAdIfAvailable: ad is showed before some time")
-            return
-        }
-
         // If the ad is not available, don't show it.
         if (!isAdAvailable()) {
             Log.d(TAG, "The app open ad is not ready yet.")
