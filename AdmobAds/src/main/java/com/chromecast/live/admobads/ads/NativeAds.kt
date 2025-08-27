@@ -102,6 +102,12 @@ fun Context.nativeAdMainSmall(
     adUnit: String
 ) {
 
+
+    val adView = LayoutInflater.from(this).inflate(R.layout.native_frame_small, null, false)
+    frameAd.removeAllViews()
+    frameAd.addView(adView)
+
+
     val txtAd = frameAd.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
 
     if (!isNetworkAvailable(this) || isProUser()) {
@@ -222,6 +228,13 @@ fun Activity.nativeAdMedium(
     frameLayout: FrameLayout,
     adUnit: String
 ) {
+
+
+    val adView = LayoutInflater.from(this).inflate(R.layout.native_frame_big, null, false)
+    frameLayout.removeAllViews()
+    frameLayout.addView(adView)
+
+
     val context = this
     val shimmerFrameLayout =
         frameLayout.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
