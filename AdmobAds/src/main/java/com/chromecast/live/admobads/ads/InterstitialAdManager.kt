@@ -28,6 +28,7 @@ class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifferenc
         private const val TAG = "InterstitialAdManager"
         private var clickCount = 0
         var timeLapse = 0L
+
     }
 
     private var interstitialAd: InterstitialAd? = null
