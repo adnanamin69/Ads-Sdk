@@ -7,12 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.chromecast.live.admobads.R
@@ -42,6 +44,7 @@ fun BannerAd(
     modifier: Modifier = Modifier,
     adUnit: String,
     collapsible: String? = null,
+    adSize: AdSize? = null
 ) {
     val context = LocalActivity.current
 
@@ -64,8 +67,8 @@ fun BannerAd(
     )
 
     // This ensures loadBanner is called only once per adUnit change
-    LaunchedEffect(adUnit, collapsible) {
-        context?.loadBanner(adUnit, binding.root, collapsible)
+    LaunchedEffect(adUnit, collapsible, adSize) {
+        context?.loadBanner(adUnit, binding.root, collapsible, adSize)
     }
 }
 
@@ -87,7 +90,8 @@ fun BannerAd(
 fun Activity.loadBanner(
     adUnit: String,
     frameLayout: FrameLayout,
-    collapsible: String? = null
+    collapsible: String? = null,
+    adSize: AdSize? = null
 ) {
 
 
@@ -99,6 +103,12 @@ fun Activity.loadBanner(
     Log.i(TAG, "loadBanner: $adUnit")
     frameLayout.visibility = View.VISIBLE
     val shimmerLayout = frameLayout.findViewById<ShimmerFrameLayout>(R.id.shimmer_container)
+    val imageView = frameLayout.findViewById<ImageView>(R.id.image)
+
+    adSize?.let {
+        if (it == AdSize.MEDIUM_RECTANGLE)
+            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.shimar_big))
+    }
 
     if (!isNetworkAvailable(this) || isProUser()) {
         shimmerLayout?.visibility = View.GONE
@@ -124,7 +134,7 @@ fun Activity.loadBanner(
     }
 
     val adWidth = (adWidthPixels / density).toInt()
-    val size = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+    val size = adSize ?: AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
 
 
     adView.setAdSize(size)
