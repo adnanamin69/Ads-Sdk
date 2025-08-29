@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ad_view"
-    android:background="?nativeBg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?nativeBg"
     android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,6 +127,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/round_btn"
             android:gravity="center"
+            android:padding="@dimen/_12sdp"
             android:paddingHorizontal="8dp"
             android:paddingVertical="8dp"
             android:textAllCaps="false"
