@@ -36,14 +36,18 @@ import com.sebaslogen.resaca.rememberScoped
  * @param unitId The AdMob native ad unit ID
  */
 @Composable
-fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
+fun NativeMedium(
+    modifier: Modifier = Modifier,
+    unitId: String,
+    withFailedMedia: (() -> Unit)? = null
+) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
 
         val view = LayoutInflater.from(context)
             .inflate(R.layout.native_frame_big, null, false)
             .let { view -> NativeFrameBigBinding.bind(view) }
-        context?.nativeAdMedium(view.adFrameNative, unitId)
+        context?.nativeAdMedium(view.adFrameNative, unitId, withFailedMedia)
 
         view
 
@@ -226,7 +230,8 @@ fun populateUnifiedNativeAdViewSmall(
  */
 fun Activity.nativeAdMedium(
     frameLayout: FrameLayout,
-    adUnit: String
+    adUnit: String,
+    withFailedMedia: (() -> Unit)? = null
 ) {
 
 
@@ -257,11 +262,19 @@ fun Activity.nativeAdMedium(
         // otherwise you will have a memory leak.
 
         try {
-            populateUnifiedNativeAd(NativeAd, adView)
+            populateUnifiedNativeAd(NativeAd, adView) {
+                if (!it) {
+                    frameLayout.removeAllViews()
+                    frameLayout.addView(adView)
+                } else withFailedMedia?.invoke()
+            }
         } catch (e: Exception) {
         }
-        frameLayout.removeAllViews()
-        frameLayout.addView(adView)
+
+        if (withFailedMedia == null) {
+            frameLayout.removeAllViews()
+            frameLayout.addView(adView)
+        }
     }
 
     val adLoader = builder.withAdListener(object : AdListener() {
@@ -275,6 +288,7 @@ fun Activity.nativeAdMedium(
             super.onAdFailedToLoad(p0)
             shimmerFrameLayout.visibility = View.GONE
             frameLayout.visibility = View.GONE
+            withFailedMedia?.invoke()
         }
     }).build()
 
@@ -296,7 +310,9 @@ fun Activity.nativeAdMedium(
 fun Activity.populateUnifiedNativeAd(
     nativeAd: NativeAd,
     adView: NativeAdView,
+    withFailedMedia: ((Boolean) -> Unit)? = null
 ) {
+
 
     // Set the media view.
     adView.mediaView = adView.findViewById(R.id.ad_media)
@@ -339,7 +355,11 @@ fun Activity.populateUnifiedNativeAd(
         adView.iconView?.visibility = View.VISIBLE
     }
     adView.mediaView?.mediaContent = nativeAd.mediaContent
-
+    withFailedMedia?.let {
+        if (adView.mediaView == null)
+            withFailedMedia.invoke(true)
+        else withFailedMedia.invoke(false)
+    }
 
 
     if (nativeAd.advertiser == null) {

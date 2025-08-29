@@ -231,34 +231,45 @@ class MainActivity : ComponentActivity() {
                             showAds = true
                         }
                         if (showAds) {
-                            BannerAd(
-                                modifier = Modifier.fillMaxWidth(),
-                                adUnit = "ca-app-pub-3940256099942544/6300978111",
-                                adSize = AdSize.MEDIUM_RECTANGLE
-                            )
+                            /* BannerAd(
+                                 modifier = Modifier.fillMaxWidth(),
+                                 adUnit = "ca-app-pub-3940256099942544/6300978111",
+                                 adSize = AdSize.MEDIUM_RECTANGLE
+                             )
 
-                            BannerAd(
-                                modifier = Modifier.fillMaxWidth(),
-                                adUnit = "ca-app-pub-3940256099942544/9214589741",
-                                "top"
-                            )
+                             BannerAd(
+                                 modifier = Modifier.fillMaxWidth(),
+                                 adUnit = "ca-app-pub-3940256099942544/9214589741",
+                                 "top"
+                             )
 
 
-                            BannerAd(
-                                modifier = Modifier.fillMaxWidth(),
-                                adUnit = "ca-app-pub-3940256099942544/9214589741",
-                                "bottom"
-                            )
+                             BannerAd(
+                                 modifier = Modifier.fillMaxWidth(),
+                                 adUnit = "ca-app-pub-3940256099942544/9214589741",
+                                 "bottom"
+                             )*/
 
+                            var adFailedOrNMedia by remember { mutableStateOf(false) }
+
+                            if (adFailedOrNMedia)
+                                BannerAd(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    adUnit = "ca-app-pub-3940256099942544/6300978111",
+                                    adSize = AdSize.MEDIUM_RECTANGLE
+                                )
 
                             NativeMedium(
                                 Modifier.fillMaxWidth(),
-                                "ca-app-pub-3940256099942544/2247696110"
-                            )
-                            NativeSmall(
-                                modifier = Modifier.fillMaxWidth(),
-                                "ca-app-pub-3940256099942544/2247696110"
-                            )
+                                "ca-app-pub-3940256099942544/2247696110",
+                            ) {
+                                adFailedOrNMedia = true
+
+                            }
+                            /*  NativeSmall(
+                                  modifier = Modifier.fillMaxWidth(),
+                                  "ca-app-pub-3940256099942544/2247696110"
+                              )*/
                         }
                     }
                 }
