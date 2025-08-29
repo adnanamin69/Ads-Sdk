@@ -5,7 +5,8 @@
     android:id="@+id/ad_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?nativeBg"
+    android:background="@drawable/round_btn"
+    android:backgroundTint="?nativeBg"
     android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
