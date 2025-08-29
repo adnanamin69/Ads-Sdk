@@ -33,6 +33,7 @@ import com.chromecast.live.admobads.ads.GoogleMobileAdsConsentManager
 import com.chromecast.live.admobads.ads.InterstitialAdManager
 import com.chromecast.live.admobads.ads.NativeMedium
 import com.chromecast.live.admobads.ads.NativeSmall
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -232,7 +233,8 @@ class MainActivity : ComponentActivity() {
                         if (showAds) {
                             BannerAd(
                                 modifier = Modifier.fillMaxWidth(),
-                                adUnit = "ca-app-pub-3940256099942544/6300978111"
+                                adUnit = "ca-app-pub-3940256099942544/6300978111",
+                                adSize = AdSize.MEDIUM_RECTANGLE
                             )
 
                             BannerAd(
