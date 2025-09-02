@@ -44,7 +44,8 @@ fun BannerAd(
     modifier: Modifier = Modifier,
     adUnit: String,
     collapsible: String? = null,
-    adSize: AdSize? = null
+    adSize: AdSize? = null,
+    withFailed: (() -> Unit)? = null
 ) {
     val context = LocalActivity.current
 
@@ -68,7 +69,7 @@ fun BannerAd(
 
     // This ensures loadBanner is called only once per adUnit change
     LaunchedEffect(adUnit, collapsible, adSize) {
-        context?.loadBanner(adUnit, binding.root, collapsible, adSize)
+        context?.loadBanner(adUnit, binding.root, collapsible, adSize, withFailed)
     }
 }
 
@@ -91,7 +92,8 @@ fun Activity.loadBanner(
     adUnit: String,
     frameLayout: FrameLayout,
     collapsible: String? = null,
-    adSize: AdSize? = null
+    adSize: AdSize? = null,
+    withFailed: (() -> Unit)? = null
 ) {
 
 
@@ -157,7 +159,9 @@ fun Activity.loadBanner(
         override fun onAdFailedToLoad(error: LoadAdError) {
             super.onAdFailedToLoad(error)
             // Keep shimmer visible if ad fails to load
-            shimmerLayout?.visibility = View.VISIBLE
+            shimmerLayout?.visibility = View.GONE
+            frameLayout.removeAllViews()
+            withFailed?.invoke()
         }
     }
 
