@@ -259,8 +259,12 @@ adManager.loadAndShowAd(context, "<ad_unit_id>", isReward = true) { wasRewarded 
 #### Traditional View-based Usage
 ```kotlin
 activity.loadBanner(
-    "<ad_unit_id>", // Your AdMob Banner Ad unit ID
-    frameLayout     // The FrameLayout where the banner will be displayed
+    "<ad_unit_id>",         // Your AdMob Banner Ad unit ID
+    frameLayout,            // The FrameLayout where the banner will be displayed
+    adSize = AdSize.BANNER, // Optional: e.g., AdSize.BANNER, LARGE_BANNER, MEDIUM_RECTANGLE
+    onFailed = { error ->   // Optional: banner load/show failure
+        // Handle error (log, retry, hide placeholder, etc.)
+    }
 )
 ```
 
@@ -269,9 +273,13 @@ You can also create collapsible banner ads that expand when clicked and collapse
 
 ```kotlin
 activity.loadBanner(
-    "<ad_unit_id>", // Your AdMob Banner Ad unit ID
-    frameLayout,    // The FrameLayout where the banner will be displayed
-    collapsible = "top" // Collapsible position: "top" or "bottom"
+    "<ad_unit_id>",          // Your AdMob Banner Ad unit ID
+    frameLayout,             // The FrameLayout where the banner will be displayed
+    collapsible = "top",     // Collapsible position: "top" or "bottom"
+    adSize = AdSize.BANNER,  // Optional size
+    onFailed = { error ->    // Optional: failed callback
+        // Handle error for collapsible banner
+    }
 )
 ```
 
@@ -279,14 +287,20 @@ activity.loadBanner(
 ```kotlin
 BannerAd(
     modifier = Modifier.fillMaxWidth(),
-    adUnit = "ca-app-pub-3940256099942544/6300978111"
+    adUnit = "ca-app-pub-3940256099942544/6300978111",
+    onFailed = { error ->
+        // Handle banner (compose) failure
+    }
 )
 
 // With collapsible functionality
 BannerAd(
     modifier = Modifier.fillMaxWidth(),
     adUnit = "ca-app-pub-3940256099942544/9214589741",
-    collapsible = "top" // or "bottom"
+    collapsible = "top", // or "bottom"
+    onFailed = { error ->
+        // Handle banner (compose) failure
+    }
 )
 ```
 
@@ -314,16 +328,22 @@ BannerAd(
 **Small Native Ad**
 ```kotlin
 context.nativeAdMainSmall(
-    frameAd,        // The FrameLayout where the native ad will be displayed
-    "<ad_unit_id>" // Your AdMob Native Ad unit ID
+    frameAd,          // The FrameLayout where the native ad will be displayed
+    "<ad_unit_id>",  // Your AdMob Native Ad unit ID
+    onFailed = { error ->
+        // Handle native small failure
+    }
 )
 ```
 
 **Medium Native Ad**
 ```kotlin
 activity.nativeAdMedium(
-    frameLayout,    // The FrameLayout where the native ad will be displayed
-    "<ad_unit_id>" // Your AdMob Native Ad unit ID
+    frameLayout,     // The FrameLayout where the native ad will be displayed
+    "<ad_unit_id>", // Your AdMob Native Ad unit ID
+    onFailed = { error ->
+        // Handle native medium failure
+    }
 )
 ```
 
@@ -333,7 +353,10 @@ activity.nativeAdMedium(
 ```kotlin
 NativeSmall(
     modifier = Modifier.fillMaxWidth(),
-    unitId = "ca-app-pub-3940256099942544/2247696110"
+    unitId = "ca-app-pub-3940256099942544/2247696110",
+    onFailed = { error ->
+        // Handle native small load/show failure
+    }
 )
 ```
 
@@ -341,7 +364,10 @@ NativeSmall(
 ```kotlin
 NativeMedium(
     modifier = Modifier.fillMaxWidth(),
-    unitId = "ca-app-pub-3940256099942544/2247696110"
+    unitId = "ca-app-pub-3940256099942544/2247696110",
+    onFailed = { error ->
+        // Handle native medium load/show failure
+    }
 )
 ```
 
