@@ -77,6 +77,8 @@ class InterstitialAdManager private constructor(
     var rewardAmount: Int = 0
     var rewardType: String = ""
 
+
+
     init {
         if (preloadedAds && context != null) {
             defaultInterUnit?.let {
