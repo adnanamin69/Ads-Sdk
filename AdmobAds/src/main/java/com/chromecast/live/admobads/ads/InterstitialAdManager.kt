@@ -181,24 +181,24 @@ class InterstitialAdManager private constructor(
     }
 
 
-   /* fun showAd(
-        context: Context,
-        clickIntervals: Int = 1,
-        enableTimeLapse: Boolean = true,
-        isReward: Boolean = false,
-        onAdDismissed: ((Boolean) -> Unit),
-    ) {
-        loadAndShowAd(
-            context,
-            if(isReward)defaultRewardUnit else defaultInterUnit,
-            clickIntervals,
-            showLoading,
-            enableTimeLapse,
-            isReward,
-            onAdDismissed
-        )
+    /* fun showAd(
+         context: Context,
+         clickIntervals: Int = 1,
+         enableTimeLapse: Boolean = true,
+         isReward: Boolean = false,
+         onAdDismissed: ((Boolean) -> Unit),
+     ) {
+         loadAndShowAd(
+             context,
+             if(isReward)defaultRewardUnit else defaultInterUnit,
+             clickIntervals,
+             showLoading,
+             enableTimeLapse,
+             isReward,
+             onAdDismissed
+         )
 
-    }*/
+     }*/
 
 
     private fun loadAd(context: Context, adUnitId: String) {
