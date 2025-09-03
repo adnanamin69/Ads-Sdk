@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
     }
 
     val adManager: InterstitialAdManager by lazy {
-        InterstitialAdManager()
+        InterstitialAdManager(this, "ca-app-pub-3940256099942544/1033173712")
     }
 
 
@@ -167,6 +167,26 @@ class MainActivity : ComponentActivity() {
 
                             adManager.loadAndShowAd(
                                 this@MainActivity,
+                                "ca-app-pub-3940256099942544/1033173712",
+                                clickIntervals = 1,
+                                enableTimeLapse = false,
+                                showLoading = true,
+                                isReward = false
+                            ) {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "perform your actio ad is showed $it",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }) {
+
+                            Text("Show Interstitial on every clicks time lapse off")
+                        }
+                        Button({
+
+                            adManager.loadAndShowAd(
+                                this@MainActivity,
                                 "ca-app-pub-3940256099942544/5354046379",
                                 clickIntervals = 1,
                                 enableTimeLapse = false,
@@ -181,7 +201,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }) {
 
-                            Text("Show Interstitial on every clicks time lapse off")
+                            Text("Show Reward on every clicks time lapse off")
                         }
 
 

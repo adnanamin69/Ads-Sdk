@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleObserver
 import com.chromecast.live.admobads.R
 import com.chromecast.live.admobads.ads.InterstitialAdManager.Companion.timeLapse
 import com.chromecast.live.admobads.databinding.DialogAdLoadingBinding
+import com.chromecast.live.admobads.ads.InterstitialAdManager.Companion.isFullscreenAdShowing
 
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -116,6 +117,12 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
 
         if (isShowingAd) {
             Log.d(TAG, "The app open ad is already showing.")
+            return
+        }
+
+        // Do not show app open ad if an interstitial/rewarded fullscreen ad is showing
+        if (isFullscreenAdShowing.get()) {
+            Log.d(TAG, "Skipping app open ad because another fullscreen ad is showing.")
             return
         }
 
@@ -257,6 +264,8 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
     override fun onActivityResumed(activity: Activity) {
         currentActivity = activity
         isAppInForeground = true
+        
+
         if (showAppOpenAd) {
             showAdIfAvailable(activity)
             showAppOpenAd = false
