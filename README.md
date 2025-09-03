@@ -52,19 +52,68 @@ the [JitPack Releases](https://jitpack.io/#adnanamin69/Ads-Sdk).
 
 ---
 
-## ⚠️ Mandatory Theme Configuration
+## Theming and Color Customization
 
-You **must** add the following items to your app-level theme (typically in `app/src/main/res/values/themes.xml`):
+The SDK ships with a default theme overlay applied to its layouts:
 
 ```xml
-<style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
-  <item name="colorPrimary">#F44336</item>
-  <item name="backgroundColor">#7E8539</item>
-  <item name="nativeBg">#903B3B</item>
+android:theme="@style/ThemeOverlay.AdsSdk.Default"
+```
+
+This overlay maps a set of theme attributes to default color resources, making all ad UI colors dynamic and easily overridable from your app without editing the SDK.
+
+### Available attributes
+
+- `nativeBg`
+- `adCardBackgroundColor`
+- `adHeadlineTextColor`
+- `adBodyTextColor`
+- `adBadgeTextColor`
+- `adBadgeBackgroundColor`
+- `adCtaTextColor`
+- `adCtaBackgroundColor`
+- `adMediaBackgroundColor`
+- `adIconBackgroundColor`
+
+Defaults are provided in the library’s `values/colors.xml` (e.g., `@color/ad_cta_bg`, `@color/ad_headline_text`, etc.).
+
+### Override just one color (recommended)
+
+Because the overlay points to color resources, you can override a single color globally by redefining that color in your app:
+
+```xml
+<!-- app/src/main/res/values/colors.xml -->
+<resources>
+    <!-- Change only CTA background tint -->
+    <color name="ad_cta_bg">#FF00AA88</color>
+    <!-- Optional: CTA text color -->
+    <color name="ad_cta_text">#FFFFFFFF</color>
+</resources>
+```
+
+No other changes are needed; all unspecified colors keep their defaults.
+
+### Override via app theme (attrs)
+
+If you prefer to set attributes directly in your app theme:
+
+```xml
+<style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <item name="adCtaBackgroundColor">@color/your_cta_bg</item>
+    <item name="adCtaTextColor">@color/your_cta_text</item>
+    <!-- Add other items only if you want to override them -->
 </style>
 ```
 
-If you use a different theme name, add these `<item>` elements to your main app theme.
+
+### Override at runtime (advanced)
+
+```kotlin
+// After inflating the ad view
+adView.context.theme.applyStyle(R.style.ThemeOverlay_AdsSdk_CtaOnly, true)
+```
+
+Note: Redefining the style with the exact same name `ThemeOverlay.AdsSdk.Default` in your app will replace it entirely. Prefer overriding the specific color resource(s) or creating a child overlay as shown above.
 
 ---
 
@@ -128,12 +177,25 @@ class MyApp : Application() {
 
 ### 3. Show Interstitial Ad
 
-#### Basic Usage
+#### Initialize InterstitialAdManager
+Default initialization:
 ```kotlin
 val adManager = InterstitialAdManager()
+```
+
+With custom timeout and time-lapse options:
+```kotlin
+val adManager = InterstitialAdManager(
+    adTimeout = 30000L,          // Timeout for loading an ad (ms)
+    timeLapseDifference = 15000L // Minimum time between showing ads (ms)
+)
+```
+
+#### Load and show interstitial
+```kotlin
 adManager.loadAndShowAd(
-    context,           // Activity or application context
-    "<ad_unit_id>",   // Your AdMob Interstitial Ad unit ID
+    context,            // Activity or application context
+    "<ad_unit_id>",    // Your AdMob Interstitial Ad unit ID
     clickIntervals = 1, // (Optional) Show ad every Nth click (default: 1)
     showLoading = true, // (Optional) Show loading dialog while ad loads (default: true)
     enableTimeLapse = true, // (Optional) Prevents showing ads too frequently (default: true)
@@ -179,20 +241,7 @@ adManager.loadAndShowAd(context, "<ad_unit_id>", isReward = true) { wasRewarded 
 }
 ```
 
-#### Custom Timeout and Time Lapse
-You can now customize the ad loading timeout and the minimum time between ad displays by passing arguments to the `InterstitialAdManager` constructor:
-
-```kotlin
-val adManager = InterstitialAdManager(
-    adTimeout = 30000L,         // Timeout for loading an ad in milliseconds (default: 30000L = 30s)
-    timeLapseDifference = 15000L // Minimum time in milliseconds between showing ads (default: 15000L = 15s)
-)
-```
-
-- `adTimeout`: How long to wait for an ad to load before timing out (in milliseconds).
-- `timeLapseDifference`: The minimum time (in milliseconds) that must pass before another ad can be shown.
-
-You can then use `adManager.loadAndShowAd(...)` as shown above.
+<!-- (Timeout and time-lapse initialization moved above) -->
 
 **Arguments for loadAndShowAd:**
 
@@ -210,8 +259,12 @@ You can then use `adManager.loadAndShowAd(...)` as shown above.
 #### Traditional View-based Usage
 ```kotlin
 activity.loadBanner(
-    "<ad_unit_id>", // Your AdMob Banner Ad unit ID
-    frameLayout     // The FrameLayout where the banner will be displayed
+    "<ad_unit_id>",         // Your AdMob Banner Ad unit ID
+    frameLayout,            // The FrameLayout where the banner will be displayed
+    adSize = AdSize.BANNER, // Optional: e.g., AdSize.BANNER, LARGE_BANNER, MEDIUM_RECTANGLE
+    onFailed = { error ->   // Optional: banner load/show failure
+        // Handle error (log, retry, hide placeholder, etc.)
+    }
 )
 ```
 
@@ -220,9 +273,13 @@ You can also create collapsible banner ads that expand when clicked and collapse
 
 ```kotlin
 activity.loadBanner(
-    "<ad_unit_id>", // Your AdMob Banner Ad unit ID
-    frameLayout,    // The FrameLayout where the banner will be displayed
-    collapsible = "top" // Collapsible position: "top" or "bottom"
+    "<ad_unit_id>",          // Your AdMob Banner Ad unit ID
+    frameLayout,             // The FrameLayout where the banner will be displayed
+    collapsible = "top",     // Collapsible position: "top" or "bottom"
+    adSize = AdSize.BANNER,  // Optional size
+    onFailed = { error ->    // Optional: failed callback
+        // Handle error for collapsible banner
+    }
 )
 ```
 
@@ -230,14 +287,20 @@ activity.loadBanner(
 ```kotlin
 BannerAd(
     modifier = Modifier.fillMaxWidth(),
-    adUnit = "ca-app-pub-3940256099942544/6300978111"
+    adUnit = "ca-app-pub-3940256099942544/6300978111",
+    onFailed = { error ->
+        // Handle banner (compose) failure
+    }
 )
 
 // With collapsible functionality
 BannerAd(
     modifier = Modifier.fillMaxWidth(),
     adUnit = "ca-app-pub-3940256099942544/9214589741",
-    collapsible = "top" // or "bottom"
+    collapsible = "top", // or "bottom"
+    onFailed = { error ->
+        // Handle banner (compose) failure
+    }
 )
 ```
 
@@ -265,16 +328,22 @@ BannerAd(
 **Small Native Ad**
 ```kotlin
 context.nativeAdMainSmall(
-    frameAd,        // The FrameLayout where the native ad will be displayed
-    "<ad_unit_id>" // Your AdMob Native Ad unit ID
+    frameAd,          // The FrameLayout where the native ad will be displayed
+    "<ad_unit_id>",  // Your AdMob Native Ad unit ID
+    onFailed = { error ->
+        // Handle native small failure
+    }
 )
 ```
 
 **Medium Native Ad**
 ```kotlin
 activity.nativeAdMedium(
-    frameLayout,    // The FrameLayout where the native ad will be displayed
-    "<ad_unit_id>" // Your AdMob Native Ad unit ID
+    frameLayout,     // The FrameLayout where the native ad will be displayed
+    "<ad_unit_id>", // Your AdMob Native Ad unit ID
+    onFailed = { error ->
+        // Handle native medium failure
+    }
 )
 ```
 
@@ -284,7 +353,10 @@ activity.nativeAdMedium(
 ```kotlin
 NativeSmall(
     modifier = Modifier.fillMaxWidth(),
-    unitId = "ca-app-pub-3940256099942544/2247696110"
+    unitId = "ca-app-pub-3940256099942544/2247696110",
+    onFailed = { error ->
+        // Handle native small load/show failure
+    }
 )
 ```
 
@@ -292,7 +364,10 @@ NativeSmall(
 ```kotlin
 NativeMedium(
     modifier = Modifier.fillMaxWidth(),
-    unitId = "ca-app-pub-3940256099942544/2247696110"
+    unitId = "ca-app-pub-3940256099942544/2247696110",
+    onFailed = { error ->
+        // Handle native medium load/show failure
+    }
 )
 ```
 

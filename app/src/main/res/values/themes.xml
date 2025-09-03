@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AdsSdk" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="colorPrimary">#F44336</item>
-        <item name="backgroundColor">#7E8539</item>
-        <item name="nativeBg">#903B3B</item>
-
-    </style>
+    <style name="Theme.AdsSdk" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

@@ -10,9 +10,9 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 
-fun Activity.initAppOpenAd(adUnit: String, callBack: () -> Unit) {
+fun Activity.initAppOpenAd(adUnit: String, callBack: (Boolean) -> Unit) {
     if (!isInternetConnection() || isProUser()) {
-        callBack.invoke()
+        callBack.invoke(true)
         return
     }
 
@@ -35,7 +35,7 @@ fun Activity.initAppOpenAd(adUnit: String, callBack: () -> Unit) {
     // Create a timeout mechanism
     val timeoutRunnable = Runnable {
         hasTimedOut = true
-        callBack.invoke()
+        callBack.invoke(false)
     }
 
     timeoutHandler.postDelayed(timeoutRunnable, 8000) // Timeout after 6 seconds
@@ -56,13 +56,13 @@ fun Activity.initAppOpenAd(adUnit: String, callBack: () -> Unit) {
                 ad.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
                         super.onAdDismissedFullScreenContent()
-                        callBack.invoke()
+                        callBack.invoke(true)
                         timeLapse = System.currentTimeMillis() + 15000
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                         super.onAdFailedToShowFullScreenContent(adError)
-                        callBack.invoke()
+                        callBack.invoke(false)
                     }
                 }
 
@@ -72,7 +72,7 @@ fun Activity.initAppOpenAd(adUnit: String, callBack: () -> Unit) {
                 if (hasTimedOut) return // Do nothing if timeout already triggered
 
                 timeoutHandler.removeCallbacks(timeoutRunnable)
-                callBack.invoke()
+                callBack.invoke(false)
             }
         }
     )

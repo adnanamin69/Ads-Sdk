@@ -10,12 +10,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.chromecast.live.admobads.R
-import com.chromecast.live.admobads.databinding.BannerFrameBinding
 import com.chromecast.live.admobads.databinding.NativeFrameBigBinding
 import com.chromecast.live.admobads.databinding.NativeFrameSmallBinding
 
@@ -36,14 +34,18 @@ import com.sebaslogen.resaca.rememberScoped
  * @param unitId The AdMob native ad unit ID
  */
 @Composable
-fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
+fun NativeMedium(
+    modifier: Modifier = Modifier,
+    unitId: String,
+    withFailedMedia: (() -> Unit)? = null
+) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
 
         val view = LayoutInflater.from(context)
             .inflate(R.layout.native_frame_big, null, false)
             .let { view -> NativeFrameBigBinding.bind(view) }
-        context?.nativeAdMedium(view.adFrameNative, unitId)
+        context?.nativeAdMedium(view.adFrameNative, unitId, withFailedMedia)
 
         view
 
@@ -65,13 +67,16 @@ fun NativeMedium(modifier: Modifier = Modifier, unitId: String) {
  * @param unitId The AdMob native ad unit ID
  */
 @Composable
-fun NativeSmall(modifier: Modifier = Modifier, unitId: String) {
+fun NativeSmall(
+    modifier: Modifier = Modifier, unitId: String,
+    withFailed: (() -> Unit)? = null
+) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
         val view = LayoutInflater.from(context)
             .inflate(com.chromecast.live.admobads.R.layout.native_frame_small, null, false)
             .let { view -> NativeFrameSmallBinding.bind(view) }
-        context?.nativeAdMainSmall(view.adFrameNative, unitId)
+        context?.nativeAdMainSmall(view.adFrameNative, unitId, withFailed)
 
         view
 
@@ -99,7 +104,8 @@ private const val TAG = "AdUtilss"
  */
 fun Context.nativeAdMainSmall(
     frameAd: FrameLayout,
-    adUnit: String
+    adUnit: String,
+    withFailed: (() -> Unit)? = null
 ) {
 
 
@@ -147,6 +153,7 @@ fun Context.nativeAdMainSmall(
             super.onAdFailedToLoad(p0)
             Log.d(TAG, "onAdFailedToLoad: ${p0.message}")
             frameAd.visibility = View.GONE
+            withFailed?.invoke()
         }
     }).build()
 
@@ -226,7 +233,8 @@ fun populateUnifiedNativeAdViewSmall(
  */
 fun Activity.nativeAdMedium(
     frameLayout: FrameLayout,
-    adUnit: String
+    adUnit: String,
+    withFailed: (() -> Unit)? = null
 ) {
 
 
@@ -260,6 +268,7 @@ fun Activity.nativeAdMedium(
             populateUnifiedNativeAd(NativeAd, adView)
         } catch (e: Exception) {
         }
+
         frameLayout.removeAllViews()
         frameLayout.addView(adView)
     }
@@ -275,6 +284,7 @@ fun Activity.nativeAdMedium(
             super.onAdFailedToLoad(p0)
             shimmerFrameLayout.visibility = View.GONE
             frameLayout.visibility = View.GONE
+            withFailed?.invoke()
         }
     }).build()
 
@@ -295,8 +305,9 @@ fun Activity.nativeAdMedium(
  */
 fun Activity.populateUnifiedNativeAd(
     nativeAd: NativeAd,
-    adView: NativeAdView,
+    adView: NativeAdView
 ) {
+
 
     // Set the media view.
     adView.mediaView = adView.findViewById(R.id.ad_media)
@@ -339,7 +350,6 @@ fun Activity.populateUnifiedNativeAd(
         adView.iconView?.visibility = View.VISIBLE
     }
     adView.mediaView?.mediaContent = nativeAd.mediaContent
-
 
 
     if (nativeAd.advertiser == null) {
