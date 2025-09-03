@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="nativeBg" format="color" />
+    <attr name="adHeadlineTextColor" format="color" />
+    <attr name="adBodyTextColor" format="color" />
+    <attr name="adBadgeTextColor" format="color" />
+    <attr name="adBadgeBackgroundColor" format="color" />
+    <attr name="adCtaTextColor" format="color" />
+    <attr name="adCtaBackgroundColor" format="color" />
+    <attr name="adMediaBackgroundColor" format="color" />
+    <attr name="adIconBackgroundColor" format="color" />
+    <attr name="adCardBackgroundColor" format="color" />
 </resources>

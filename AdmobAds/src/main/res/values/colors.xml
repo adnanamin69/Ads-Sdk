@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default palette for Ads SDK. Apps can override these. -->
+    <color name="ad_native_bg">#FFFFFFFF</color>
+    <color name="ad_card_bg">#FFFFFFFF</color>
+    <color name="ad_headline_text">#FF222222</color>
+    <color name="ad_body_text">#FF666666</color>
+    <color name="ad_badge_text">#FFFFFFFF</color>
+    <color name="ad_badge_bg">#FF3F51B5</color>
+    <color name="ad_cta_text">#FFFFFFFF</color>
+    <color name="ad_cta_bg">#FF3F51B5</color>
+    <color name="ad_media_bg">#FF000000</color>
+    <color name="ad_icon_bg">#FFF0F0F0</color>
+</resources>
+

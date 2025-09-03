@@ -11,5 +11,19 @@
         <item name="android:backgroundDimAmount">0.5</item>
     </style>
 
+    <!-- Default theme overlay for Ads SDK colors. Host apps can override these attrs. -->
+    <style name="ThemeOverlay.AdsSdk.Default" parent="">
+        <item name="nativeBg">@color/ad_native_bg</item>
+        <item name="adCardBackgroundColor">@color/ad_card_bg</item>
+        <item name="adHeadlineTextColor">@color/ad_headline_text</item>
+        <item name="adBodyTextColor">@color/ad_body_text</item>
+        <item name="adBadgeTextColor">@color/ad_badge_text</item>
+        <item name="adBadgeBackgroundColor">@color/ad_badge_bg</item>
+        <item name="adCtaTextColor">@color/ad_cta_text</item>
+        <item name="adCtaBackgroundColor">@color/ad_cta_bg</item>
+        <item name="adMediaBackgroundColor">@color/ad_media_bg</item>
+        <item name="adIconBackgroundColor">@color/ad_icon_bg</item>
+        <item name="colorPrimary">@color/ad_cta_bg</item>
+    </style>
 
 </resources>
