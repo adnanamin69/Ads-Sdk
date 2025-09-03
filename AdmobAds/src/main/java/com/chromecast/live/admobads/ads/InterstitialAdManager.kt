@@ -8,10 +8,8 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Window
-import androidx.activity.ComponentActivity
 import com.chromecast.live.admobads.R
 import com.chromecast.live.admobads.databinding.DialogAdLoadingBinding
-
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -22,7 +20,7 @@ import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import java.util.concurrent.atomic.AtomicBoolean
 
-class InterstitialAdManager(val adTimeout: Long = 30000L, val timeLapseDifference: Long = 15000L) {
+class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifference: Long = 15000L) {
 
     companion object {
         private const val TAG = "InterstitialAdManager"

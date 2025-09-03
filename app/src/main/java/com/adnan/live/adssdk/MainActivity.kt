@@ -270,6 +270,7 @@ class MainActivity : ComponentActivity() {
 
 
                                 }
+
                             /*  NativeSmall(
                                   modifier = Modifier.fillMaxWidth(),
                                   "ca-app-pub-3940256099942544/2247696110"
