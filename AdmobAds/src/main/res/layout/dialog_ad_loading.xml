@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?nativeBg"
+    android:theme="@style/ThemeOverlay.AdsSdk.Default">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -25,7 +27,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
-                android:indeterminateTint="?attr/colorPrimary" />
+                android:indeterminateTint="?attr/adCtaBackgroundColor" />
 
             <TextView
                 android:id="@+id/tvLoadingText"
@@ -33,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ad_is_loading"
                 android:textAlignment="center"
+                android:textColor="?adHeadlineTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
