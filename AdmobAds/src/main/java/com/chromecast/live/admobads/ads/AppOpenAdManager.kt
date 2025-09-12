@@ -178,7 +178,6 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
             // Schedule showing the ad after 3 seconds
             loadingHandler = Handler(Looper.getMainLooper())
             loadingRunnable = Runnable {
-                hideLoadingDialog()
                 showAppOpenAd(activity)
             }
 
@@ -217,6 +216,7 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
                 isShowingAd = false
                 Log.d(TAG, "App open ad was dismissed.")
                 loadAd()
+                hideLoadingDialog()
                 timeLapse = System.currentTimeMillis() + 15000
 
             }
@@ -225,6 +225,7 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
                 Log.d(TAG, "App open ad failed to show: ${adError.message}")
                 appOpenAd = null
                 isShowingAd = false
+                hideLoadingDialog()
                 loadAd()
             }
 
@@ -264,7 +265,7 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
     override fun onActivityResumed(activity: Activity) {
         currentActivity = activity
         isAppInForeground = true
-        
+
 
         if (showAppOpenAd) {
             showAdIfAvailable(activity)
