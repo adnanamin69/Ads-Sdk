@@ -77,7 +77,7 @@ publishing {
                 from(components["release"])
                 // groupId = "com.github.sagar"
                 //artifactId = "neopop-compose"
-                 version = "1.3"
+                version = "1.3"
             }
         }
     }

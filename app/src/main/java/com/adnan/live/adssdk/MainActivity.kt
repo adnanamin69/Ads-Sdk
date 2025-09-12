@@ -38,6 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
 
@@ -56,13 +57,24 @@ class MainActivity : ComponentActivity() {
             googleMobileAdsConsentManager.gatherConsent(this@MainActivity) { consentError ->
                 if (googleMobileAdsConsentManager.canRequestAds) {
                     MobileAds.initialize(this@MainActivity) {}
+
+
                     Log.i("AppOpenAdManager", "SplashScreen: ")
 
-                    val testDeviceIds = mutableListOf<String?>("7516FD76CAAE0446852A8FD2D28E3E2F")
+                    val testDeviceIds =
+                        mutableListOf<String?>("7516FD76CAAE0446852A8FD2D28E3E2F,:B43B30D0D0202997185C4EC1974ABBCD")
                     val configuration = RequestConfiguration.Builder()
                         .setTestDeviceIds(testDeviceIds)
                         .build()
                     MobileAds.setRequestConfiguration(configuration)
+
+
+                    MobileAds.openAdInspector(this@MainActivity) { error ->
+                        // check if error is null
+
+                        Log.i(TAG, "initializeConsent: ${error?.message}")
+                    }
+
 
                     /*         //  activity.nativeAdMedium(binding.nativeView.adFrameNative, nativeCard)
                              initAppOpenAd("ca-app-pub-3940256099942544/9257395921") {
