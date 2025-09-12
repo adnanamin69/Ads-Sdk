@@ -28,17 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.adnan.live.adssdk.ui.theme.AdsSdkTheme
-import com.chromecast.live.admobads.ads.BannerAd
 import com.chromecast.live.admobads.ads.GoogleMobileAdsConsentManager
 import com.chromecast.live.admobads.ads.InterstitialAdManager
-import com.chromecast.live.admobads.ads.NativeMedium
 import com.chromecast.live.admobads.ads.NativeSmall
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
 
@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
     }
 
     val adManager: InterstitialAdManager by lazy {
-        InterstitialAdManager()
+        InterstitialAdManager(this, "ca-app-pub-3940256099942544/1033173712")
     }
 
 
@@ -57,7 +57,24 @@ class MainActivity : ComponentActivity() {
             googleMobileAdsConsentManager.gatherConsent(this@MainActivity) { consentError ->
                 if (googleMobileAdsConsentManager.canRequestAds) {
                     MobileAds.initialize(this@MainActivity) {}
+
+
                     Log.i("AppOpenAdManager", "SplashScreen: ")
+
+                    val testDeviceIds =
+                        mutableListOf<String?>("7516FD76CAAE0446852A8FD2D28E3E2F,:B43B30D0D0202997185C4EC1974ABBCD")
+                    val configuration = RequestConfiguration.Builder()
+                        .setTestDeviceIds(testDeviceIds)
+                        .build()
+                    MobileAds.setRequestConfiguration(configuration)
+
+
+                    MobileAds.openAdInspector(this@MainActivity) { error ->
+                        // check if error is null
+
+                        Log.i(TAG, "initializeConsent: ${error?.message}")
+                    }
+
 
                     /*         //  activity.nativeAdMedium(binding.nativeView.adFrameNative, nativeCard)
                              initAppOpenAd("ca-app-pub-3940256099942544/9257395921") {
@@ -167,6 +184,26 @@ class MainActivity : ComponentActivity() {
 
                             adManager.loadAndShowAd(
                                 this@MainActivity,
+                                "ca-app-pub-3940256099942544/1033173712",
+                                clickIntervals = 1,
+                                enableTimeLapse = false,
+                                showLoading = true,
+                                isReward = false
+                            ) {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "perform your actio ad is showed $it",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }) {
+
+                            Text("Show Interstitial on every clicks time lapse off")
+                        }
+                        Button({
+
+                            adManager.loadAndShowAd(
+                                this@MainActivity,
                                 "ca-app-pub-3940256099942544/5354046379",
                                 clickIntervals = 1,
                                 enableTimeLapse = false,
@@ -181,7 +218,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }) {
 
-                            Text("Show Interstitial on every clicks time lapse off")
+                            Text("Show Reward on every clicks time lapse off")
                         }
 
 
@@ -253,28 +290,34 @@ class MainActivity : ComponentActivity() {
                             var adFailedOrNMedia by remember { mutableStateOf(false) }
 
 
-                            BannerAd(
-                                modifier = Modifier.fillMaxWidth(),
-                                adUnit = "ca-app-pub-3940256099942544/6300978111",
-                                adSize = AdSize.MEDIUM_RECTANGLE
-                            ) {
-                                //adFailedOrNMedia = true
-                            }
+                            /*  BannerAd(
+                                  modifier = Modifier.fillMaxWidth(),
+                                  adUnit = "ca-app-pub-3940256099942544/6300978111",
+                              ) {
+                                  //adFailedOrNMedia = true
+                              }*/
 
 
-                            // if (adFailedOrNMedia)
-                            NativeMedium(
-                                Modifier.fillMaxWidth(),
-                                "ca-app-pub-3940256099942544/2247696110",
-                            ) {
-
-
-                            }
+                            // ca - app - pub - 3940256099942544 / 1044960115
 
                             NativeSmall(
                                 modifier = Modifier.fillMaxWidth(),
                                 "ca-app-pub-3940256099942544/2247696110"
                             )
+                            /*    // if (adFailedOrNMedia)
+                                NativeMedium(
+                                    Modifier.fillMaxWidth(),
+                                    "ca-app-pub-3940256099942544/2247696110",
+                                ) {
+
+
+                                }
+
+                                NativeSmall(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    "ca-app-pub-3940256099942544/2247696110"
+                                )*/
+
                         }
                     }
                 }

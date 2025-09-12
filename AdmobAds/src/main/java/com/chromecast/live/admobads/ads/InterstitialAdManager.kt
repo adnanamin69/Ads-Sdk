@@ -20,28 +20,77 @@ import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 import java.util.concurrent.atomic.AtomicBoolean
 
-class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifference: Long = 15000L) {
+class InterstitialAdManager private constructor(
+    val context: Context? = null,
+    var adTimeout: Long,
+    var timeLapseDifference: Long,
+    val preloadedAds: Boolean,
+    val defaultRewardUnit: String?,
+    val defaultInterUnit: String?
+) {
+    // Case 1: No preloaded ads
+    constructor(
+        adTimeout: Long = 30000L,
+        timeLapseDifference: Long = 15000L,
+    ) : this(null, adTimeout, timeLapseDifference, false, null, null)
+
+    // Case 2: Preloaded ads with interstitial unit
+    constructor(
+        context: Context,
+        defaultInterUnit: String,
+        defaultRewardUnit: String? = null,
+        adTimeout: Long = 30000L,
+        timeLapseDifference: Long = 15000L,
+
+
+        ) : this(
+        context,
+        adTimeout,
+        timeLapseDifference,
+        true,
+        defaultRewardUnit,
+        defaultInterUnit
+    )
+
 
     companion object {
         private const val TAG = "InterstitialAdManager"
         private var clickCount = 0
         var timeLapse = 0L
 
+        @JvmStatic
+        val isFullscreenAdShowing = AtomicBoolean(false)
+
     }
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialRewardedAd: RewardedInterstitialAd? = null
     private var isLoading = AtomicBoolean(false)
-    private var isAdReady = AtomicBoolean(false)
     private var loadingDialog: Dialog? = null
     private var timeoutHandler: Handler? = null
     private var timeoutRunnable: Runnable? = null
     private var currentAdUnitId: String? = null
     private var onAdDismissedCallback: ((Boolean) -> Unit)? = null
     private var showLoading: Boolean = true
+    private var isAdReady = AtomicBoolean(false)
 
     var rewardAmount: Int = 0
     var rewardType: String = ""
+
+
+
+    init {
+        if (preloadedAds && context != null) {
+            defaultInterUnit?.let {
+                loadAd(context, defaultInterUnit)
+            }
+            defaultRewardUnit?.let {
+                loadRewardAd(context, defaultRewardUnit)
+            }
+        }
+
+    }
+
 
     /**
      * Load and show interstitial ad with all the specified requirements
@@ -68,7 +117,7 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
 
 
         this.onAdDismissedCallback = onAdDismissed
-        this.showLoading = showLoading
+        this.showLoading = showLoading && !preloadedAds
 
 
         if (rewardAmount > 0) {
@@ -110,12 +159,19 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
         }
 
         // If ad is ready and same ad unit, show it
-        if (isAdReady.get() && interstitialAd != null && isReward) {
+        if (isAdReady.get() && interstitialRewardedAd != null && isReward) {
             showAdReward(context)
             return
         }
 
+        if (preloadedAds) {
+            onAdDismissed.invoke(false)
 
+            if (isReward)
+                loadRewardAd(context, adUnitId)
+            else loadAd(context, adUnitId)
+            return
+        }
 
         if (!isReward)
         // Load new ad
@@ -126,6 +182,27 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
 
     }
 
+
+    /* fun showAd(
+         context: Context,
+         clickIntervals: Int = 1,
+         enableTimeLapse: Boolean = true,
+         isReward: Boolean = false,
+         onAdDismissed: ((Boolean) -> Unit),
+     ) {
+         loadAndShowAd(
+             context,
+             if(isReward)defaultRewardUnit else defaultInterUnit,
+             clickIntervals,
+             showLoading,
+             enableTimeLapse,
+             isReward,
+             onAdDismissed
+         )
+
+     }*/
+
+
     private fun loadAd(context: Context, adUnitId: String) {
         if (isLoading.getAndSet(true)) {
             return
@@ -135,7 +212,7 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
         isAdReady.set(false)
 
         // Show loading dialog
-        if (showLoading)
+        if (showLoading && !preloadedAds)
             showLoadingDialog(context)
 
         // Set timeout
@@ -164,7 +241,8 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
                     setupAdCallbacks()
 
                     // Show ad immediately
-                    showAd(context)
+                    if (!preloadedAds)
+                        showAd(context)
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
@@ -179,8 +257,8 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
                     // Hide loading dialog
                     hideLoadingDialog()
 
-                    // Perform failed callback
-                    onAdDismissedCallback?.invoke(false)
+                    if (!preloadedAds)
+                        onAdDismissedCallback?.invoke(false)
                 }
             }
         )
@@ -196,7 +274,7 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
         isAdReady.set(false)
 
         // Show loading dialog
-        if (showLoading)
+        if (showLoading && !preloadedAds)
             showLoadingDialog(context)
 
         // Set timeout
@@ -225,7 +303,8 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
                     setupRewardedAdCallbacks()
 
                     // Show ad immediately
-                    showAdReward(context)
+                    if (!preloadedAds)
+                        showAdReward(context)
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
@@ -240,8 +319,11 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
                     // Hide loading dialog
                     hideLoadingDialog()
 
+
+
+                    if (!preloadedAds)
                     // Perform failed callback
-                    onAdDismissedCallback?.invoke(false)
+                        onAdDismissedCallback?.invoke(false)
                 }
             }
         )
@@ -255,14 +337,21 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
                 isAdReady.set(false)
                 interstitialAd = null
                 timeLapse = System.currentTimeMillis() + timeLapseDifference
+                isFullscreenAdShowing.set(false)
                 // Perform dismissed callback
                 onAdDismissedCallback?.invoke(true)
+
+                if (preloadedAds)
+                    currentAdUnitId?.let {
+                        loadAd(context!!, it)
+                    }
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 Log.e(TAG, "Interstitial ad failed to show: ${adError.message}")
                 isAdReady.set(false)
                 interstitialAd = null
+                isFullscreenAdShowing.set(false)
 
                 // Perform failed callback
                 onAdDismissedCallback?.invoke(false)
@@ -270,6 +359,7 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
 
             override fun onAdShowedFullScreenContent() {
                 Log.d(TAG, "Interstitial ad showed full screen content")
+                isFullscreenAdShowing.set(true)
             }
         }
     }
@@ -281,17 +371,24 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
                 isAdReady.set(false)
                 interstitialRewardedAd = null
                 timeLapse = System.currentTimeMillis() + timeLapseDifference
+                isFullscreenAdShowing.set(false)
                 // Perform dismissed callback
                 if (rewardAmount > 0) {
                     rewardAmount = 0
                     onAdDismissedCallback?.invoke(true)
                 } else onAdDismissedCallback?.invoke(false)
+
+                if (preloadedAds)
+                    currentAdUnitId?.let {
+                        loadRewardAd(context!!, adUnitId = it)
+                    }
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 Log.e(TAG, "Interstitial ad failed to show: ${adError.message}")
                 isAdReady.set(false)
                 interstitialRewardedAd = null
+                isFullscreenAdShowing.set(false)
 
                 // Perform failed callback
                 onAdDismissedCallback?.invoke(false)
@@ -299,6 +396,7 @@ class InterstitialAdManager(var adTimeout: Long = 30000L, var timeLapseDifferenc
 
             override fun onAdShowedFullScreenContent() {
                 Log.d(TAG, "RewardedInterstitial ad showed full screen content")
+                isFullscreenAdShowing.set(true)
             }
         }
     }

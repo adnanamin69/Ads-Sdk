@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleObserver
 import com.chromecast.live.admobads.R
 import com.chromecast.live.admobads.ads.InterstitialAdManager.Companion.timeLapse
 import com.chromecast.live.admobads.databinding.DialogAdLoadingBinding
+import com.chromecast.live.admobads.ads.InterstitialAdManager.Companion.isFullscreenAdShowing
 
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -119,6 +120,12 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
             return
         }
 
+        // Do not show app open ad if an interstitial/rewarded fullscreen ad is showing
+        if (isFullscreenAdShowing.get()) {
+            Log.d(TAG, "Skipping app open ad because another fullscreen ad is showing.")
+            return
+        }
+
 
         // If the ad is not available, don't show it.
         if (!isAdAvailable()) {
@@ -171,7 +178,6 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
             // Schedule showing the ad after 3 seconds
             loadingHandler = Handler(Looper.getMainLooper())
             loadingRunnable = Runnable {
-                hideLoadingDialog()
                 showAppOpenAd(activity)
             }
 
@@ -210,6 +216,7 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
                 isShowingAd = false
                 Log.d(TAG, "App open ad was dismissed.")
                 loadAd()
+                hideLoadingDialog()
                 timeLapse = System.currentTimeMillis() + 15000
 
             }
@@ -218,6 +225,7 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
                 Log.d(TAG, "App open ad failed to show: ${adError.message}")
                 appOpenAd = null
                 isShowingAd = false
+                hideLoadingDialog()
                 loadAd()
             }
 
@@ -257,6 +265,8 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
     override fun onActivityResumed(activity: Activity) {
         currentActivity = activity
         isAppInForeground = true
+
+
         if (showAppOpenAd) {
             showAdIfAvailable(activity)
             showAppOpenAd = false
