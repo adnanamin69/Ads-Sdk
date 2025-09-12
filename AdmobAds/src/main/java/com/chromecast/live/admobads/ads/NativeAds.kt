@@ -184,6 +184,7 @@ fun populateUnifiedNativeAdViewSmall(
     adView.bodyView = adView.findViewById(R.id.ad_body)
     adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
     adView.iconView = adView.findViewById(R.id.ad_app_icon)
+    adView.mediaView = adView.findViewById(R.id.ad_media)
 //        adView.priceView = adView.findViewById(R.id.ad_price)
 //        adView.starRatingView = adView.findViewById(R.id.ad_stars)
 //        adView.storeView = adView.findViewById(R.id.ad_store)
@@ -209,14 +210,29 @@ fun populateUnifiedNativeAdViewSmall(
         (adView.callToActionView as TextView).text = nativeAd.callToAction
     }
 
-    if (nativeAd.icon == null) {
+
+
+    if (nativeAd.mediaContent != null && nativeAd.mediaContent != null) {
+        Log.i(TAG, "populateUnifiedNativeAdViewSmall: media")
+        adView.mediaView?.visibility = View.VISIBLE
         adView.iconView?.visibility = View.INVISIBLE
-    } else {
+        adView.mediaView?.mediaContent = nativeAd.mediaContent
+
+    } else if (nativeAd.icon != null) {
+        Log.i(TAG, "populateUnifiedNativeAdViewSmall: icon")
         (adView.iconView as ImageView).setImageDrawable(
             nativeAd.icon?.drawable
         )
         adView.iconView?.visibility = View.VISIBLE
+        adView.mediaView?.visibility = View.INVISIBLE
+    } else {
+        Log.i(TAG, "populateUnifiedNativeAdViewSmall: nothing")
+        adView.iconView?.visibility = View.INVISIBLE
+        adView.mediaView?.visibility = View.INVISIBLE
     }
+
+
+
 
     adView.setNativeAd(nativeAd)
 }

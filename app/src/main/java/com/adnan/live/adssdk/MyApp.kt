@@ -10,7 +10,7 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appOpenManger.forceLoadAd()
+        //appOpenManger.forceLoadAd()
 
     }
 }

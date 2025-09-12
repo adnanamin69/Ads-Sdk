@@ -28,6 +28,21 @@
             android:background="@drawable/rectangle_shape_btn"
             android:backgroundTint="?attr/adIconBackgroundColor"
             android:padding="@dimen/_2sdp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linadText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.gms.ads.nativead.MediaView
+            android:id="@+id/ad_media"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:adjustViewBounds="true"
+            android:background="#000000"
+            android:padding="@dimen/_2sdp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/linadText"
             app:layout_constraintStart_toStartOf="parent"
