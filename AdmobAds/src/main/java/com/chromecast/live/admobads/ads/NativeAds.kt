@@ -123,6 +123,7 @@ fun Context.nativeAdMainSmall(
     if (!isNetworkAvailable(this) || isProUser()) {
         txtAd.visibility = View.GONE
         frameAd.visibility = View.GONE
+        callBack?.invoke(true)
         return
     }
 
@@ -270,6 +271,7 @@ fun Activity.nativeAdMedium(
     if (!isNetworkAvailable(this) || isProUser()) {
         shimmerFrameLayout.visibility = View.GONE
         frameLayout.visibility = View.GONE
+        callBack?.invoke(true)
         return
     }
 
