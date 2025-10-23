@@ -32,12 +32,13 @@ import com.sebaslogen.resaca.rememberScoped
  *
  * @param modifier Compose modifier for styling and layout
  * @param unitId The AdMob native ad unit ID
+ * @param callBack this will indicate if ad is loaded or failed
  */
 @Composable
 fun NativeMedium(
     modifier: Modifier = Modifier,
     unitId: String,
-    withFailedMedia: (() -> Unit)? = null
+    callBack: ((Boolean) -> Unit)? = null
 ) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
@@ -45,7 +46,7 @@ fun NativeMedium(
         val view = LayoutInflater.from(context)
             .inflate(R.layout.native_frame_big, null, false)
             .let { view -> NativeFrameBigBinding.bind(view) }
-        context?.nativeAdMedium(view.adFrameNative, unitId, withFailedMedia)
+        context?.nativeAdMedium(view.adFrameNative, unitId, callBack)
 
         view
 
@@ -65,18 +66,20 @@ fun NativeMedium(
  *
  * @param modifier Compose modifier for styling and layout
  * @param unitId The AdMob native ad unit ID
+ * @param callBack this will indicate if ad is loaded or failed
+ *
  */
 @Composable
 fun NativeSmall(
     modifier: Modifier = Modifier, unitId: String,
-    withFailed: (() -> Unit)? = null
+    callBack: ((Boolean) -> Unit)? = null
 ) {
     val context = LocalActivity.current
     val binding = rememberScoped("ad") {
         val view = LayoutInflater.from(context)
-            .inflate(com.chromecast.live.admobads.R.layout.native_frame_small, null, false)
+            .inflate(R.layout.native_frame_small, null, false)
             .let { view -> NativeFrameSmallBinding.bind(view) }
-        context?.nativeAdMainSmall(view.adFrameNative, unitId, withFailed)
+        context?.nativeAdMainSmall(view.adFrameNative, unitId, callBack)
 
         view
 
@@ -99,13 +102,14 @@ private const val TAG = "AdUtilss"
  *
  * @param frameAd The FrameLayout container where the small native ad will be displayed
  * @param adUnit The AdMob native ad unit ID
+ * @param callBack this will indicate if ad is loaded or failed
  *
  * Small native ads are text-only ads without media content, suitable for compact layouts.
  */
 fun Context.nativeAdMainSmall(
     frameAd: FrameLayout,
     adUnit: String,
-    withFailed: (() -> Unit)? = null
+    callBack: ((Boolean) -> Unit)? = null
 ) {
 
 
@@ -119,6 +123,7 @@ fun Context.nativeAdMainSmall(
     if (!isNetworkAvailable(this) || isProUser()) {
         txtAd.visibility = View.GONE
         frameAd.visibility = View.GONE
+        callBack?.invoke(true)
         return
     }
 
@@ -147,13 +152,14 @@ fun Context.nativeAdMainSmall(
         override fun onAdLoaded() {
             super.onAdLoaded()
             txtAd.visibility = View.GONE
+            callBack?.invoke(true)
         }
 
         override fun onAdFailedToLoad(p0: LoadAdError) {
             super.onAdFailedToLoad(p0)
             Log.d(TAG, "onAdFailedToLoad: ${p0.message}")
             frameAd.visibility = View.GONE
-            withFailed?.invoke()
+            callBack?.invoke(false)
         }
     }).build()
 
@@ -243,14 +249,14 @@ fun populateUnifiedNativeAdViewSmall(
  *
  * @param frameLayout The FrameLayout container where the medium native ad will be displayed
  * @param adUnit The AdMob native ad unit ID
- *
+ * @param callBack this will indicate if ad is loaded or failed
  * Medium native ads include media content (images/videos) along with text elements,
  * providing a richer advertising experience compared to small native ads.
  */
 fun Activity.nativeAdMedium(
     frameLayout: FrameLayout,
     adUnit: String,
-    withFailed: (() -> Unit)? = null
+    callBack: ((Boolean) -> Unit)? = null
 ) {
 
 
@@ -265,6 +271,7 @@ fun Activity.nativeAdMedium(
     if (!isNetworkAvailable(this) || isProUser()) {
         shimmerFrameLayout.visibility = View.GONE
         frameLayout.visibility = View.GONE
+        callBack?.invoke(true)
         return
     }
 
@@ -294,13 +301,14 @@ fun Activity.nativeAdMedium(
             super.onAdLoaded()
             shimmerFrameLayout.visibility = View.GONE
             Log.i(TAG, "onAdLoaded: ")
+            callBack?.invoke(true)
         }
 
         override fun onAdFailedToLoad(p0: LoadAdError) {
             super.onAdFailedToLoad(p0)
             shimmerFrameLayout.visibility = View.GONE
             frameLayout.visibility = View.GONE
-            withFailed?.invoke()
+            callBack?.invoke(false)
         }
     }).build()
 
