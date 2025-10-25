@@ -78,7 +78,6 @@ class InterstitialAdManager private constructor(
     var rewardType: String = ""
 
 
-
     init {
         if (preloadedAds && context != null) {
             defaultInterUnit?.let {
@@ -110,7 +109,7 @@ class InterstitialAdManager private constructor(
     ) {
 
 
-        if (context.isProUser()) {
+        if (context.isProUser() || !context.isInternetConnection()) {
             onAdDismissed.invoke(true)
             return
         }
@@ -235,7 +234,7 @@ class InterstitialAdManager private constructor(
                     cancelTimeout()
 
                     // Hide loading dialog
-                    hideLoadingDialog()
+                    //hideLoadingDialog()
 
                     // Set up ad callbacks
                     setupAdCallbacks()
@@ -297,7 +296,7 @@ class InterstitialAdManager private constructor(
                     cancelTimeout()
 
                     // Hide loading dialog
-                    hideLoadingDialog()
+                    //   hideLoadingDialog()
 
                     // Set up ad callbacks
                     setupRewardedAdCallbacks()
@@ -340,7 +339,7 @@ class InterstitialAdManager private constructor(
                 isFullscreenAdShowing.set(false)
                 // Perform dismissed callback
                 onAdDismissedCallback?.invoke(true)
-
+                hideLoadingDialog()
                 if (preloadedAds)
                     currentAdUnitId?.let {
                         loadAd(context!!, it)
@@ -352,7 +351,7 @@ class InterstitialAdManager private constructor(
                 isAdReady.set(false)
                 interstitialAd = null
                 isFullscreenAdShowing.set(false)
-
+                hideLoadingDialog()
                 // Perform failed callback
                 onAdDismissedCallback?.invoke(false)
             }
@@ -360,6 +359,7 @@ class InterstitialAdManager private constructor(
             override fun onAdShowedFullScreenContent() {
                 Log.d(TAG, "Interstitial ad showed full screen content")
                 isFullscreenAdShowing.set(true)
+                hideLoadingDialog()
             }
         }
     }
@@ -372,6 +372,7 @@ class InterstitialAdManager private constructor(
                 interstitialRewardedAd = null
                 timeLapse = System.currentTimeMillis() + timeLapseDifference
                 isFullscreenAdShowing.set(false)
+                hideLoadingDialog()
                 // Perform dismissed callback
                 if (rewardAmount > 0) {
                     rewardAmount = 0
@@ -389,7 +390,7 @@ class InterstitialAdManager private constructor(
                 isAdReady.set(false)
                 interstitialRewardedAd = null
                 isFullscreenAdShowing.set(false)
-
+                hideLoadingDialog()
                 // Perform failed callback
                 onAdDismissedCallback?.invoke(false)
             }
@@ -397,6 +398,7 @@ class InterstitialAdManager private constructor(
             override fun onAdShowedFullScreenContent() {
                 Log.d(TAG, "RewardedInterstitial ad showed full screen content")
                 isFullscreenAdShowing.set(true)
+                hideLoadingDialog()
             }
         }
     }
