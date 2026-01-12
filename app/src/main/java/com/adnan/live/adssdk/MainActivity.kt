@@ -30,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import com.adnan.live.adssdk.ui.theme.AdsSdkTheme
 import com.chromecast.live.admobads.ads.GoogleMobileAdsConsentManager
 import com.chromecast.live.admobads.ads.InterstitialAdManager
+import com.chromecast.live.admobads.ads.NativeBanner
 import com.chromecast.live.admobads.ads.NativeSmall
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
@@ -300,7 +301,7 @@ class MainActivity : ComponentActivity() {
 
                             // ca - app - pub - 3940256099942544 / 1044960115
 
-                            NativeSmall(
+                            NativeBanner(
                                 modifier = Modifier.fillMaxWidth(),
                                 "ca-app-pub-3940256099942544/2247696110"
                             )

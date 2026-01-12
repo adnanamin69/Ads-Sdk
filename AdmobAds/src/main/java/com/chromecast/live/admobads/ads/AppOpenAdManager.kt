@@ -283,7 +283,11 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
 
     override fun onActivityStopped(activity: Activity) {
 
-        if (!isAppInForeground()) {
+
+        showAppOpenAd = true
+
+
+     /*   if (!isAppInForeground()) {
             Log.d("AppState", "App went to background")
             showAppOpenAd = true
         }
@@ -292,7 +296,7 @@ class AppOpenAdManager(val context: Application, val adUnit: String) :
             isAppInForeground = false
             // Hide loading dialog if app goes to background
             hideLoadingDialog()
-        }
+        }*/
     }
 
     override fun onActivityDestroyed(activity: Activity) {

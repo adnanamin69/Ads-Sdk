@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.chromecast.live.admobads.R
 import com.chromecast.live.admobads.databinding.NativeFrameBigBinding
+import com.chromecast.live.admobads.databinding.NativeFrameBannerBinding
 import com.chromecast.live.admobads.databinding.NativeFrameSmallBinding
 
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -91,6 +92,38 @@ fun NativeSmall(
             binding.root
         }
         // Only uses the remembered binding
+    )
+}
+
+
+/**
+ * Composable function for displaying a banner-sized native ad
+ *
+ * @param modifier Compose modifier for styling and layout
+ * @param unitId The AdMob native ad unit ID
+ * @param callBack this will indicate if ad is loaded or failed
+ */
+@Composable
+fun NativeBanner(
+    modifier: Modifier = Modifier,
+    unitId: String,
+    callBack: ((Boolean) -> Unit)? = null
+) {
+    val context = LocalActivity.current
+    val binding = rememberScoped("ad") {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.native_frame_banner, null, false)
+            .let { view -> NativeFrameBannerBinding.bind(view) }
+        context?.nativeAdBanner(view.adFrameNative, unitId, callBack)
+
+        view
+    }
+
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            binding.root
+        }
     )
 }
 
@@ -388,6 +421,135 @@ fun Activity.populateUnifiedNativeAd(
     adView.setNativeAd(nativeAd)
 }
 
+
+/**
+ * Loads a banner native ad into the specified FrameLayout
+ *
+ * @param frameLayout The FrameLayout container where the banner native ad will be displayed
+ * @param adUnit The AdMob native ad unit ID
+ * @param callBack this will indicate if ad is loaded or failed
+ *
+ * Banner native ads are compact horizontal ads suitable for banner placements.
+ */
+fun Activity.nativeAdBanner(
+    frameLayout: FrameLayout,
+    adUnit: String,
+    callBack: ((Boolean) -> Unit)? = null
+) {
+    val adView = LayoutInflater.from(this).inflate(R.layout.native_frame_banner, null, false)
+    frameLayout.removeAllViews()
+    frameLayout.addView(adView)
+
+    val shimmerFrameLayout =
+        frameLayout.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_native)
+    if (!isNetworkAvailable(this) || isProUser()) {
+        shimmerFrameLayout.visibility = View.GONE
+        frameLayout.visibility = View.GONE
+        callBack?.invoke(true)
+        return
+    }
+
+    val builder = AdLoader.Builder(this, adUnit)
+    Log.i(TAG, "nativeAdBanner: adnan $adUnit")
+    builder.forNativeAd { NativeAd ->
+        val adView = layoutInflater.inflate(R.layout.native_ad_banner, null, false) as NativeAdView
+        if (isDestroyed || isFinishing || isChangingConfigurations) {
+            NativeAd.destroy()
+            return@forNativeAd
+        }
+
+        try {
+            populateUnifiedNativeAdViewBanner(NativeAd, adView)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error populating banner native ad", e)
+        }
+
+        frameLayout.removeAllViews()
+        frameLayout.addView(adView)
+    }
+
+    val adLoader = builder.withAdListener(object : AdListener() {
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            shimmerFrameLayout.visibility = View.GONE
+            callBack?.invoke(true)
+        }
+
+        override fun onAdFailedToLoad(p0: LoadAdError) {
+            super.onAdFailedToLoad(p0)
+            Log.d(TAG, "onAdFailedToLoad: ${p0.message}")
+            shimmerFrameLayout.visibility = View.GONE
+            frameLayout.visibility = View.GONE
+            callBack?.invoke(false)
+        }
+    }).build()
+
+    val adRequest = AdRequest.Builder().build()
+    adLoader.loadAd(adRequest)
+}
+
+/**
+ * Populates a banner native ad view with ad content
+ *
+ * @param nativeAd The NativeAd object containing the ad data
+ * @param adView The NativeAdView to populate with ad content
+ *
+ * This function sets up the banner native ad layout with headline, body text, call-to-action button,
+ * app icon, and media content. It handles cases where certain ad assets might be missing.
+ */
+fun populateUnifiedNativeAdViewBanner(
+    nativeAd: NativeAd,
+    adView: NativeAdView,
+) {
+    // Set the media view.
+    adView.mediaView = adView.findViewById(R.id.ad_media)
+
+    // Set other ad assets.
+    adView.headlineView = adView.findViewById(R.id.ad_headline)
+    adView.bodyView = adView.findViewById(R.id.ad_body)
+    adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
+    adView.iconView = adView.findViewById(R.id.ad_app_icon)
+
+    // The headline is guaranteed to be in every UnifiedNativeAd.
+    (adView.headlineView as TextView).text = nativeAd.headline
+
+    // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
+    // check before trying to display them.
+    if (nativeAd.body == null) {
+        adView.bodyView?.visibility = View.INVISIBLE
+    } else {
+        adView.bodyView?.visibility = View.VISIBLE
+        (adView.bodyView as TextView).text = nativeAd.body
+    }
+
+    if (nativeAd.callToAction == null) {
+        adView.callToActionView?.visibility = View.INVISIBLE
+    } else {
+        adView.callToActionView?.visibility = View.VISIBLE
+        (adView.callToActionView as TextView).text = nativeAd.callToAction
+    }
+
+    // Handle media content and icon - prefer media if available
+    if (nativeAd.mediaContent != null) {
+        Log.i(TAG, "populateUnifiedNativeAdViewBanner: media")
+        adView.mediaView?.visibility = View.VISIBLE
+        adView.iconView?.visibility = View.INVISIBLE
+        adView.mediaView?.mediaContent = nativeAd.mediaContent
+    } else if (nativeAd.icon != null) {
+        Log.i(TAG, "populateUnifiedNativeAdViewBanner: icon")
+        (adView.iconView as ImageView).setImageDrawable(
+            nativeAd.icon?.drawable
+        )
+        adView.iconView?.visibility = View.VISIBLE
+        adView.mediaView?.visibility = View.INVISIBLE
+    } else {
+        Log.i(TAG, "populateUnifiedNativeAdViewBanner: nothing")
+        adView.iconView?.visibility = View.INVISIBLE
+        adView.mediaView?.visibility = View.INVISIBLE
+    }
+
+    adView.setNativeAd(nativeAd)
+}
 
 /**
  * Checks if the device has an active network connection
